@@ -1,8 +1,10 @@
 package com.eng.software.mova.shared.exceptions;
 
-public class ResourceAlreadyExistsException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class ResourceAlreadyExistsException extends ApiException {
     public ResourceAlreadyExistsException(String message) {
-        super(message);
+        super(message, HttpStatus.CONFLICT);
     }
 }
 
