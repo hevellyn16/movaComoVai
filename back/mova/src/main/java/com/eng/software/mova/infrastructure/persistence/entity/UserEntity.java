@@ -4,6 +4,7 @@ import com.eng.software.mova.domain.model.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@SQLRestriction("is_active = true")
 @Builder
 public class UserEntity {
 

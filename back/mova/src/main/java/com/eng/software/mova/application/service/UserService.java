@@ -82,6 +82,8 @@ public class UserService {
     }
 
     public void delete(UUID id) {
+        if (!userRepositoryPort.existsById(id)) throw new ResourceNotFoundException("User not found with id: " + id);
+
         userRepositoryPort.deleteById(id);
     }
 }

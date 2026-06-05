@@ -44,6 +44,11 @@ public class UserRepository implements UserRepositoryPort {
     }
 
     @Override
+    public boolean existsById(UUID id) {
+        return userJpaRepository.existsById(id);
+    }
+
+    @Override
     public User save(User user) {
         return UserConverter.entityToDomain(userJpaRepository.save(UserConverter.domainToEntity(user)));
     }
@@ -55,10 +60,6 @@ public class UserRepository implements UserRepositoryPort {
 
     @Override
     public void deleteById(UUID id) {
-        if (!userJpaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
-
         userJpaRepository.deleteById(id);
     }
 }

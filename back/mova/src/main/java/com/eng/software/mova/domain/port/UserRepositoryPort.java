@@ -12,6 +12,7 @@ public interface UserRepositoryPort {
     Optional<User> findById(UUID id);
     Page<User> findAll(Pageable pageable);
     boolean existsByEmail(String email);
+    boolean existsById(UUID id);
     User save(User user);
     User update(User user);
     void deleteById(UUID id);
