@@ -5,18 +5,26 @@ import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
 import com.eng.software.mova.domain.model.User;
 import com.eng.software.mova.domain.model.enums.UserType;
+import com.eng.software.mova.domain.port.EmailGateway;
 import com.eng.software.mova.domain.port.UserRepositoryPort;
+import com.eng.software.mova.infrastructure.security.Auth0JwtTokenProvider;
+import com.eng.software.mova.shared.exceptions.ApiException;
 import com.eng.software.mova.shared.exceptions.ResourceAlreadyExistsException;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.UserConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -25,6 +33,11 @@ import java.util.UUID;
 public class UserService {
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoder encoder;
+    private final Auth0JwtTokenProvider jwtTokenProvider;
+    private final EmailGateway emailGateway;
+
+    @Value("${app.passwordResetBaseUrl}")
+    private String passwordResetBaseUrl;
 
     @Transactional(readOnly = true)
     public UserResponseDTO findById(UUID id) {
@@ -86,6 +99,39 @@ public class UserService {
         if (!userRepositoryPort.existsById(id)) throw new ResourceNotFoundException("User not found with id: " + id);
 
         userRepositoryPort.deleteById(id);
+    }
+
+    public void forgotPassword(String email) {
+        User user = userRepositoryPort.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+        String token = jwtTokenProvider.generatePasswordResetToken(user.getEmail());
+        String resetLink = passwordResetBaseUrl + "/reset-password?token=" + URLEncoder.encode(token, StandardCharsets.UTF_8);
+
+        emailGateway.sendHtmlEmail(
+                user.getEmail(),
+                "Recuperacao de senha",
+                "reset-password",
+                Map.of(
+                        "name", user.getName(),
+                        "token", token,
+                        "resetLink", resetLink
+                )
+        );
+    }
+
+    public void resetPassword(String token, String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new ApiException("Password and confirm password do not match", HttpStatus.BAD_REQUEST);
+        }
+
+        String email = jwtTokenProvider.getEmailFromPasswordResetToken(token);
+        User user = userRepositoryPort.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+        user.setPassword(encoder.encode(password));
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepositoryPort.update(user);
     }
 }
 

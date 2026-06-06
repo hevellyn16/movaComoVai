@@ -1,6 +1,7 @@
 package com.eng.software.mova.infrastructure.security;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.eng.software.mova.shared.exceptions.InvalidAuthenticationException;
@@ -23,6 +24,9 @@ public class Auth0JwtTokenProvider {
 
     @Value("${app.jwtExpirationInMs}")
     private long jwtExpirationInMs;
+
+    @Value("${app.jwtResetExpirationInMs}")
+    private long jwtResetExpirationInMs;
 
     private Algorithm algorithm;
 
@@ -69,14 +73,43 @@ public class Auth0JwtTokenProvider {
 
     public String validateToken(String token) {
         try {
-            var verifier = JWT.require(algorithm)
-                    .withIssuer(ISSUER)
-                    .build()
-                    .verify(token);
-
-            return verifier.getSubject();
+            return verify(token).getSubject();
         } catch (JWTVerificationException ex) {
             throw new InvalidAuthenticationException("Invalid token");
         }
+    }
+
+    public String generatePasswordResetToken(String email) {
+        Instant now = Instant.now();
+        Instant expiryDate = now.plusMillis(jwtResetExpirationInMs);
+
+        return JWT.create()
+                .withIssuer(ISSUER)
+                .withSubject(email)
+                .withIssuedAt(now)
+                .withExpiresAt(expiryDate)
+                .withClaim("type", "password-reset")
+                .sign(algorithm);
+    }
+
+    public String getEmailFromPasswordResetToken(String token) {
+        try {
+            DecodedJWT decodedJWT = verify(token);
+            String type = decodedJWT.getClaim("type").asString();
+            if (!"password-reset".equals(type)) {
+                throw new InvalidAuthenticationException("Invalid password reset token");
+            }
+
+            return decodedJWT.getSubject();
+        } catch (JWTVerificationException ex) {
+            throw new InvalidAuthenticationException("Invalid password reset token");
+        }
+    }
+
+    private DecodedJWT verify(String token) {
+        return JWT.require(algorithm)
+                .withIssuer(ISSUER)
+                .build()
+                .verify(token);
     }
 }

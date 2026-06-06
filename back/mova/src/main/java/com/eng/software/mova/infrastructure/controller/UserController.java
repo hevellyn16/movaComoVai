@@ -3,6 +3,8 @@ package com.eng.software.mova.infrastructure.controller;
 import com.eng.software.mova.application.dto.user.UserCreateDTO;
 import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
+import com.eng.software.mova.application.dto.auth.EmailRequestDTO;
+import com.eng.software.mova.application.dto.auth.PasswordRequestDTO;
 import com.eng.software.mova.application.service.UserService;
 import com.eng.software.mova.infrastructure.security.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -53,6 +55,19 @@ public class UserController {
                 .toUri();
 
         return ResponseEntity.created(location).body(userCreated);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody EmailRequestDTO dto) {
+        userService.forgotPassword(dto.email());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestParam String token,
+                                              @Valid @RequestBody PasswordRequestDTO dto) {
+        userService.resetPassword(token, dto.password(), dto.confirmPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping

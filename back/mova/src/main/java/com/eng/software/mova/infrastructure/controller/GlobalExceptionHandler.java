@@ -27,6 +27,28 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, error.getStatus());
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
+        CustomError<String> error = new CustomError<>(
+                e.getMessage(),
+                request.getDescription(false),
+                HttpStatus.NOT_FOUND
+        );
+
+        return new ResponseEntity<>(error, error.getStatus());
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<Object> handleResourceAlreadyExistsException(ResourceAlreadyExistsException e, WebRequest request) {
+        CustomError<String> error = new CustomError<>(
+                e.getMessage(),
+                request.getDescription(false),
+                HttpStatus.CONFLICT
+        );
+
+        return new ResponseEntity<>(error, error.getStatus());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException e, WebRequest request) {
         List<String> validationErrors = e.getBindingResult()
