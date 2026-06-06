@@ -12,6 +12,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByEmail(String email);
     boolean existsByEmail(String email);
 
+    Optional<UserEntity> findByEmailOrName(String email, String username);
+
     @Query("UPDATE UserEntity u SET u.isActive = false WHERE u.id = :id")
     @Modifying
     void deleteById(UUID id);

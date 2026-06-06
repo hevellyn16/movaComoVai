@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface UserRepositoryPort {
     Optional<User> findByEmail(String email);
     Optional<User> findById(UUID id);
+    Optional<User> findByEmailOrUsername(String email, String username);
     Page<User> findAll(Pageable pageable);
     boolean existsByEmail(String email);
     boolean existsById(UUID id);

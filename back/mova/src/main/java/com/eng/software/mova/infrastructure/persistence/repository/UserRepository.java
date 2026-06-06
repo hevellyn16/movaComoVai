@@ -33,6 +33,12 @@ public class UserRepository implements UserRepositoryPort {
     }
 
     @Override
+    public Optional<User> findByEmailOrUsername(String email, String username) {
+        return userJpaRepository.findByEmailOrName(email, username)
+                .map(UserConverter::entityToDomain);
+    }
+
+    @Override
     public Page<User> findAll(Pageable pageable) {
         return userJpaRepository.findAll(pageable)
                 .map(UserConverter::entityToDomain);

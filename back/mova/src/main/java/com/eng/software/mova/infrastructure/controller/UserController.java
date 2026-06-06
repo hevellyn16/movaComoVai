@@ -4,6 +4,7 @@ import com.eng.software.mova.application.dto.user.UserCreateDTO;
 import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
 import com.eng.software.mova.application.service.UserService;
+import com.eng.software.mova.infrastructure.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,11 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,16 +27,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
     @GetMapping("/email/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> findByEmail(@PathVariable String email) {
         return ResponseEntity.ok(userService.findByEmail(email));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserResponseDTO>> findAll(@PageableDefault Pageable pageable) {
         return ResponseEntity.ok(userService.findAll(pageable));
     }
@@ -50,20 +55,30 @@ public class UserController {
         return ResponseEntity.created(location).body(userCreated);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @Valid @RequestBody UserUpdateDTO dto) {
+    @PutMapping
+    public ResponseEntity<UserResponseDTO> update(@Valid @RequestBody UserUpdateDTO dto,
+                                                  @AuthenticationPrincipal CustomUserDetails authenticatedUser) {
+        if (authenticatedUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        UUID id = authenticatedUser.getId();
         return ResponseEntity.ok(userService.update(id, dto));
     }
 
     @PutMapping("/{id}/admin")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> updateToAdmin(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.updateToAdmin(id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<?> delete(@AuthenticationPrincipal CustomUserDetails authenticatedUser) {
+        if (authenticatedUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        UUID id = authenticatedUser.getId();
         userService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -12,6 +12,7 @@ import com.eng.software.mova.shared.utils.UserConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Transactional
 public class UserService {
     private final UserRepositoryPort userRepositoryPort;
-//    private final PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
     @Transactional(readOnly = true)
     public UserResponseDTO findById(UUID id) {
@@ -53,7 +54,7 @@ public class UserService {
         }
 
         User user = UserConverter.createDTOToDomain(dto);
-//        user.setPassword(encoder.encode(dto.password()));
+        user.setPassword(encoder.encode(dto.password()));
 
         return UserConverter.domainToResponse(userRepositoryPort.save(user));
     }
