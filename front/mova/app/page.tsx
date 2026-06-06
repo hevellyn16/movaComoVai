@@ -1,9 +1,9 @@
-import { redirect } from "next/navigation";
-
-export const metadata = {
-  title: "Home",
-};
+import Header from "../components/layout/header";
 
 export default function Home() {
-  redirect("/feed");
+  return (
+    <main>
+      <Header />
+    </main>
+  );
 }
