@@ -1,0 +1,72 @@
+@baseUrl = http://localhost:8080
+@authToken = Bearer YOUR_JWT_TOKEN_HERE
+@userId = 00000000-0000-0000-0000-000000000000
+@email = user@example.com
+@resetToken = YOUR_RESET_TOKEN_HERE
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "pablobreak2017@alu.ufc.br",
+  "password": "12345678"
+}
+
+### Create user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "User Name",
+  "email": "user@example.com",
+  "password": "your-password"
+}
+
+### Forgot password
+POST {{baseUrl}}/users/forgot-password
+Content-Type: application/json
+
+{
+  "email": "pablobreak2017@alu.ufc.br"
+}
+
+### Reset password
+PUT {{baseUrl}}/users/reset-password?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCYXJiZVNob3BBUEkiLCJzdWIiOiJwYWJsb2JyZWFrMjAxN0BhbHUudWZjLmJyIiwiaWF0IjoxNzgwNzUxMDcyLCJleHAiOjE3ODA3NTE5NzIsInR5cGUiOiJwYXNzd29yZC1yZXNldCJ9.zVefvtrkqXgBqSOXerS8PG7VCp67mET0zNsxCxJrepCvTPv845FrGc0b8NgRkpToQJceSFeveqJuev-jrawVfg
+Content-Type: application/json
+
+{
+  "password": "12345678",
+  "confirmPassword": "12345678"
+}
+
+### Update authenticated user
+PUT {{baseUrl}}/users
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "name": "Updated Name",
+  "email": "updated@example.com",
+  "password": "new-password"
+}
+
+### Delete authenticated user
+DELETE {{baseUrl}}/users
+Authorization: {{authToken}}
+
+### Get user by id - ADMIN
+GET {{baseUrl}}/users/{{userId}}
+Authorization: {{authToken}}
+
+### Get user by email - ADMIN
+GET {{baseUrl}}/users/email/{{email}}
+Authorization: {{authToken}}
+
+### List users - ADMIN
+GET {{baseUrl}}/users?page=0&size=10&sort=name,asc
+Authorization: {{authToken}}
+
+### Promote user to admin - ADMIN
+PUT {{baseUrl}}/users/{{userId}}/admin
+Authorization: {{authToken}}
