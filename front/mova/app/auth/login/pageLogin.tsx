@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
 // import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
@@ -69,9 +69,9 @@ export const LoginForm = () => {
             <div className="space-y-1">
               <div className="flex justify-between items-center">
                 <label htmlFor="password" className="block text-sm font-semibold text-gray-800">Senha</label>
-                <a href="/auth/forgotPassword" className="text-sm text-[#0066cc] hover:underline font-medium">
+                <Link href="/auth/forgotPassword" className="text-sm text-[#0066cc] hover:underline font-medium">
                   Esqueci minha senha
-                </a>
+                </Link>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -144,9 +144,9 @@ export const LoginForm = () => {
 
           <p className="mt-8 text-center text-sm text-gray-600">
             Não tem uma conta?{' '}
-            <a href="/auth/register" className="font-bold text-[#b91c1c] hover:underline">
+            <Link href="/auth/register" className="font-bold text-[#b91c1c] hover:underline">
               Cadastre-se
-            </a>
+            </Link>
           </p>
 
         </div>
