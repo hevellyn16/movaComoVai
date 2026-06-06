@@ -17,7 +17,7 @@ export default function Button({
 		<button
 			type={type}
 			onClick={onClick}
-			className={`py-3 px-4 bg-primary text-on-primary rounded-lg font-sans font-semibold text-sm hover:bg-primary-container transition-colors shadow-sm active:scale-[0.98] duration-150 flex items-center justify-center gap-2 cursor-pointer ${className}`}
+			className={`py-3 px-4 bg-red-mova text-white-mova rounded-lg font-sans font-semibold text-sm hover:bg-red-mova-dark transition-colors shadow-sm active:scale-[0.98] duration-150 flex items-center justify-center gap-2 cursor-pointer ${className}`}
 		>
 			{label}
 			{icon && (
