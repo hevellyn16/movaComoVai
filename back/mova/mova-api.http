@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:8080
-@authToken = Bearer YOUR_JWT_TOKEN_HERE
+@authToken = Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCYXJiZVNob3BBUEkiLCJzdWIiOiJwYWJsbyIsImlhdCI6MTc4MDgyODYyMywiZXhwIjoxNzgwOTE1MDIzLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjoiYzMyNTVkODAtMDc0ZS00MWMyLWI4ZjAtOTUzMjA0MjNkZWEyIn0.xSUJKSbSurzDfT2EOw8X3Mqm14Stcj7ugEdwRpsO8bpmYByWpEjSEQfwinIBlB8-hAr5-lq2ZJhv-NzdzW0SSw
 @userId = 00000000-0000-0000-0000-000000000000
 @email = user@example.com
 @resetToken = YOUR_RESET_TOKEN_HERE
@@ -69,4 +69,34 @@ Authorization: {{authToken}}
 
 ### Promote user to admin - ADMIN
 PUT {{baseUrl}}/users/{{userId}}/admin
+Authorization: {{authToken}}
+
+### Find all tags
+GET {{baseUrl}}/tags
+Authorization: {{authToken}}
+
+### Find tag by id
+GET {{baseUrl}}/tags/98ac13d2-d453-4da6-9d18-c9d54340eaab
+Authorization: {{authToken}}
+
+### Create tag
+POST {{baseUrl}}/tags
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "tagName": "Tag Name"
+}
+
+### Update tag
+PUT {{baseUrl}}/tags/98ac13d2-d453-4da6-9d18-c9d54340eaab
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "tagName": "Updated Tag Name"
+}
+
+### Delete tag
+DELETE {{baseUrl}}/tags/98ac13d2-d453-4da6-9d18-c9d54340eaab
 Authorization: {{authToken}}
