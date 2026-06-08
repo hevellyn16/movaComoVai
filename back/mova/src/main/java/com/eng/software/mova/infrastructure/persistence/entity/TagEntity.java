@@ -31,4 +31,10 @@ public class TagEntity {
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<UserEntity> users = new HashSet<>();
+
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    @Builder.Default
+    @EqualsAndHashCode.Exclude
+    private Set<EventEntity> events = new HashSet<>();
+
 }

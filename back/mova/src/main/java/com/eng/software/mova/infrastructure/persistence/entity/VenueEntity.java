@@ -3,6 +3,8 @@ package com.eng.software.mova.infrastructure.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -52,8 +54,8 @@ public class VenueEntity {
     @Builder.Default
     private boolean hasFoodsAndDrinks = false;
 
-    // @OneToMany(mappedBy = "venue", fetch = FetchType.LAZY)
-    // @Builder.Default
-    // @EqualsAndHashCode.Exclude
-    // private Set<EventEntity> events = new HashSet<>();
+    @OneToMany(mappedBy = "venue", fetch = FetchType.LAZY)
+    @Builder.Default
+    @EqualsAndHashCode.Exclude
+    private Set<EventEntity> events = new HashSet<>();
 }

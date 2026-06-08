@@ -12,11 +12,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
 public class TagRepository implements TagRepositoryPort {
     private final TagJpaRepository tagJpaRepository;
+
+    @Override
+    public Set<Tag> findAllById(Set<UUID> ids) {
+        return tagJpaRepository.findAllById(ids).stream()
+                .map(TagConverter::entityToDomain)
+                .collect(Collectors.toSet());
+    }
 
     @Override
     public Optional<Tag> findById(UUID id) {

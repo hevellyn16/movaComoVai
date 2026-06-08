@@ -17,4 +17,5 @@ public interface TagRepositoryPort {
     Tag update(Tag tag);
     void deleteById(UUID id);
     long countByIdIn(Set<UUID> ids);
+    Set<Tag> findAllById(Set<UUID> ids);
 }

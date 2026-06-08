@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -70,6 +71,20 @@ public class TagService {
         }
 
         tagRepositoryPort.deleteById(id);
+    }
+
+    public Set<Tag> getTagsAndVerify(Set<UUID> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            return new HashSet<>();
+        }
+
+        Set<Tag> tags = tagRepositoryPort.findAllById(tagIds);
+
+        if (tags.size() != tagIds.size()) {
+            throw new ResourceNotFoundException("One or more tags not found with ids: " + tagIds);
+        }
+
+        return tags;
     }
 
     public void verifyAllTagsExist(Set<UUID> tagIds) {
