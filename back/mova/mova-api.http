@@ -214,3 +214,18 @@ Authorization: {{authToken}}
 ### Delete event - ADMIN
 DELETE {{baseUrl}}/events/a326d0ea-2836-4128-a1a7-4f74eaf01f6f
 Authorization: {{authToken}}
+
+### Associar tags a um evento - ADMIN
+POST {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/tags
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "tagIds": [
+    "71f68257-a625-42c6-ac12-9cb6d2efd831"
+  ]
+}
+
+### Remover tag de um evento - ADMIN
+DELETE {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/tags/71f68257-a625-42c6-ac12-9cb6d2efd831
+Authorization: {{authToken}}

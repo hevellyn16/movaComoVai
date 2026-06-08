@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -119,5 +120,35 @@ public class EventService {
     public void delete(UUID id) {
         findById(id);
         eventRepositoryPort.deleteById(id);
+    }
+
+    @Transactional
+    public void addTagsToEvent(UUID eventId, Set<UUID> tagIds) {
+        Event event = findById(eventId);
+
+        Set<Tag> tagsToAdd = tagService.getTagsAndVerify(tagIds);
+
+        if (event.getTags() == null) {
+            event.setTags(new HashSet<>());
+        }
+        event.getTags().addAll(tagsToAdd);
+
+        event.setUpdatedAt(LocalDateTime.now());
+
+        eventRepositoryPort.save(event);
+    }
+
+    @Transactional
+    public void removeTagFromEvent(UUID eventId, UUID tagId) {
+        Event event = findById(eventId);
+
+        if (event.getTags() != null) {
+            boolean removed = event.getTags().removeIf(tag -> tag.getId().equals(tagId));
+
+            if (removed) {
+                event.setUpdatedAt(LocalDateTime.now());
+                eventRepositoryPort.save(event);
+            }
+        }
     }
 }

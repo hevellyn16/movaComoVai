@@ -2,6 +2,7 @@ package com.eng.software.mova.infrastructure.controller;
 
 import com.eng.software.mova.application.dto.event.EventCreateDTO;
 import com.eng.software.mova.application.dto.event.EventResponseDTO;
+import com.eng.software.mova.application.dto.event.EventTagAssociationDTO;
 import com.eng.software.mova.application.dto.event.EventUpdateDTO;
 import com.eng.software.mova.application.service.EventService;
 import com.eng.software.mova.domain.model.Event;
@@ -88,6 +89,26 @@ public class EventController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{eventId}/tags")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> addTagsToEvent(
+            @PathVariable UUID eventId,
+            @RequestBody @Valid EventTagAssociationDTO dto) {
+
+        service.addTagsToEvent(eventId, dto.tagIds());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{eventId}/tags/{tagId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removeTagFromEvent(
+            @PathVariable UUID eventId,
+            @PathVariable UUID tagId) {
+
+        service.removeTagFromEvent(eventId, tagId);
         return ResponseEntity.noContent().build();
     }
 }
