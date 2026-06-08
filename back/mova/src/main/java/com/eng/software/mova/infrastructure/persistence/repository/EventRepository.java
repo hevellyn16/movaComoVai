@@ -20,6 +20,11 @@ public class EventRepository implements EventRepositoryPort {
     private final EventJpaRepository jpaRepository;
 
     @Override
+    public void deletePictureById(UUID pictureId) {
+        jpaRepository.deletePictureById(pictureId);
+    }
+
+    @Override
     public Event save(Event event) {
         return EventConverter.entityToDomain(jpaRepository.save(EventConverter.domainToEntity(event)));
     }

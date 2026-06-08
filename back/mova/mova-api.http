@@ -229,3 +229,16 @@ Authorization: {{authToken}}
 ### Remover tag de um evento - ADMIN
 DELETE {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/tags/71f68257-a625-42c6-ac12-9cb6d2efd831
 Authorization: {{authToken}}
+
+### Adicionar imagem ao evento - ADMIN
+POST {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/pictures
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "pictureUrl": "https://meubucket.s3.amazonaws.com/eventos/banner-festival.jpg"
+}
+
+### Remover imagem do evento - ADMIN
+DELETE {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/pictures/6a0de349-9564-4c04-84ec-47dd226b8124
+Authorization: {{authToken}}

@@ -18,4 +18,6 @@ public interface EventRepositoryPort {
     Page<Event> findTodayEvents(LocalDateTime startOfDay, LocalDateTime endOfDay, Pageable pageable);
     Page<Event> findUpcomingEvents(LocalDateTime now, Pageable pageable);
     Page<Event> search(String q, LocalDateTime dateFrom, LocalDateTime dateTo, BigDecimal priceMin, BigDecimal priceMax, String neighborhood, Pageable pageable);
+
+    void deletePictureById(UUID pictureId);
 }

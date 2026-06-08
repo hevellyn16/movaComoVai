@@ -1,9 +1,6 @@
 package com.eng.software.mova.infrastructure.controller;
 
-import com.eng.software.mova.application.dto.event.EventCreateDTO;
-import com.eng.software.mova.application.dto.event.EventResponseDTO;
-import com.eng.software.mova.application.dto.event.EventTagAssociationDTO;
-import com.eng.software.mova.application.dto.event.EventUpdateDTO;
+import com.eng.software.mova.application.dto.event.*;
 import com.eng.software.mova.application.service.EventService;
 import com.eng.software.mova.domain.model.Event;
 import com.eng.software.mova.infrastructure.security.CustomUserDetails;
@@ -109,6 +106,26 @@ public class EventController {
             @PathVariable UUID tagId) {
 
         service.removeTagFromEvent(eventId, tagId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{eventId}/pictures")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> addPictureToEvent(
+            @PathVariable UUID eventId,
+            @RequestBody @Valid EventPictureCreateDTO dto) {
+
+        service.addPictureToEvent(eventId, dto.pictureUrl());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{eventId}/pictures/{pictureId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removePictureFromEvent(
+            @PathVariable UUID eventId,
+            @PathVariable UUID pictureId) {
+
+        service.removePictureFromEvent(eventId, pictureId);
         return ResponseEntity.noContent().build();
     }
 }

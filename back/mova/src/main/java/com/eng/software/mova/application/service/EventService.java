@@ -2,10 +2,7 @@ package com.eng.software.mova.application.service;
 
 import com.eng.software.mova.application.dto.event.EventCreateDTO;
 import com.eng.software.mova.application.dto.event.EventUpdateDTO;
-import com.eng.software.mova.domain.model.Event;
-import com.eng.software.mova.domain.model.Tag;
-import com.eng.software.mova.domain.model.User;
-import com.eng.software.mova.domain.model.Venue;
+import com.eng.software.mova.domain.model.*;
 import com.eng.software.mova.domain.port.EventRepositoryPort;
 import com.eng.software.mova.domain.port.UserRepositoryPort;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
@@ -149,6 +146,38 @@ public class EventService {
                 event.setUpdatedAt(LocalDateTime.now());
                 eventRepositoryPort.save(event);
             }
+        }
+    }
+
+    @Transactional
+    public void addPictureToEvent(UUID eventId, String pictureUrl) {
+        Event event = findById(eventId);
+
+        if (event.getPictures() == null) {
+            event.setPictures(new java.util.HashSet<>());
+        }
+
+        EventPicture newPicture = EventPicture.builder()
+                .pictureUrl(pictureUrl)
+                .build();
+
+        event.getPictures().add(newPicture);
+        event.setUpdatedAt(LocalDateTime.now());
+
+        eventRepositoryPort.save(event);
+    }
+
+    @Transactional
+    public void removePictureFromEvent(UUID eventId, UUID pictureId) {
+        Event event = findById(eventId);
+
+        boolean hasPicture = event.getPictures() != null &&
+                event.getPictures().stream().anyMatch(pic -> pic.getId().equals(pictureId));
+
+        if (hasPicture) {
+            eventRepositoryPort.deletePictureById(pictureId);
+        } else {
+            throw new ResourceNotFoundException("Picture not found for this event.");
         }
     }
 }

@@ -2,10 +2,13 @@ package com.eng.software.mova.shared.utils;
 
 import com.eng.software.mova.application.dto.event.EventResponseDTO;
 import com.eng.software.mova.domain.model.Event;
+import com.eng.software.mova.domain.model.EventPicture;
 import com.eng.software.mova.domain.model.Tag;
 import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
+import com.eng.software.mova.infrastructure.persistence.entity.EventPictureEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,12 +30,19 @@ public class EventConverter {
                 .updatedAt(entity.getUpdatedAt())
                 .tags(entity.getTags() != null ? entity.getTags().stream()
                         .map(TagConverter::entityToDomain).collect(Collectors.toSet()) : null)
+                .pictures(entity.getPictures() != null ? entity.getPictures().stream()
+                        .map(picEntity -> EventPicture.builder()
+                                .id(picEntity.getId())
+                                .pictureUrl(picEntity.getPictureUrl())
+                                .build())
+                        .collect(Collectors.toSet()) : null)
                 .build();
     }
 
     public static EventEntity domainToEntity(Event domain) {
         if (domain == null) return null;
-        return EventEntity.builder()
+
+        EventEntity entity = EventEntity.builder()
                 .id(domain.getId())
                 .user(UserConverter.domainToEntity(domain.getUser()))
                 .venue(VenueConverter.domainToEntity(domain.getVenue()))
@@ -47,6 +57,20 @@ public class EventConverter {
                 .tags(domain.getTags() != null ? domain.getTags().stream()
                         .map(TagConverter::domainToEntity).collect(Collectors.toSet()) : null)
                 .build();
+
+        if (domain.getPictures() != null) {
+            Set<EventPictureEntity> pictureEntities = domain.getPictures().stream().map(pic -> {
+                EventPictureEntity picEntity = new EventPictureEntity();
+                picEntity.setId(pic.getId());
+                picEntity.setPictureUrl(pic.getPictureUrl());
+                picEntity.setEvent(entity);
+                return picEntity;
+            }).collect(Collectors.toSet());
+
+            entity.setPictures(pictureEntities);
+        }
+
+        return entity;
     }
 
     public static EventResponseDTO domainToResponse(Event domain) {

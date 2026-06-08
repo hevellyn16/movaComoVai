@@ -4,6 +4,7 @@ import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -32,4 +33,8 @@ public interface EventJpaRepository extends JpaRepository<EventEntity, UUID> {
             @Param("priceMax") BigDecimal priceMax,
             @Param("neighborhood") String neighborhood,
             Pageable pageable);
+
+    @Modifying
+    @Query("DELETE FROM EventPictureEntity p WHERE p.id = :pictureId")
+    void deletePictureById(@Param("pictureId") UUID pictureId);
 }
