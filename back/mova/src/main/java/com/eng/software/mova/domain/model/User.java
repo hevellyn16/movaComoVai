@@ -4,6 +4,7 @@ import com.eng.software.mova.domain.model.enums.UserType;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -22,4 +23,5 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isActive;
+    private Set<UUID> tagsId;
 }

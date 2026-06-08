@@ -1,5 +1,6 @@
 package com.eng.software.mova.infrastructure.controller;
 
+import com.eng.software.mova.application.dto.tag.UserTagAssociationDTO;
 import com.eng.software.mova.application.dto.user.UserCreateDTO;
 import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
@@ -93,6 +94,23 @@ public class UserController {
         UUID id = authenticatedUser.getId();
         userService.delete(id);
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/tags")
+    public ResponseEntity<Void> addTagToUser(@RequestBody UserTagAssociationDTO dto,
+                                             @RequestAttribute String userId
+    ) {
+        userService.addTagToUser(UUID.fromString(userId), dto.tagIds());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me/tags/{tagId}")
+    public ResponseEntity<Void> removeTagFromUser(
+            @PathVariable UUID tagId,
+            @RequestAttribute String userId) {
+
+        userService.removeTagFromUser(UUID.fromString(userId), tagId);
         return ResponseEntity.noContent().build();
     }
 }

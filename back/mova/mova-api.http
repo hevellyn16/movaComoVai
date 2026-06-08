@@ -1,10 +1,7 @@
 @baseUrl = http://localhost:8080
-@authToken = Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCYXJiZVNob3BBUEkiLCJzdWIiOiJwYWJsbyIsImlhdCI6MTc4MDgyODYyMywiZXhwIjoxNzgwOTE1MDIzLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjoiYzMyNTVkODAtMDc0ZS00MWMyLWI4ZjAtOTUzMjA0MjNkZWEyIn0.xSUJKSbSurzDfT2EOw8X3Mqm14Stcj7ugEdwRpsO8bpmYByWpEjSEQfwinIBlB8-hAr5-lq2ZJhv-NzdzW0SSw
-@userId = 00000000-0000-0000-0000-000000000000
-@email = user@example.com
-@resetToken = YOUR_RESET_TOKEN_HERE
 
 ### Login
+# @name loginRequest
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
@@ -12,6 +9,10 @@ Content-Type: application/json
   "username": "pablobreak2017@alu.ufc.br",
   "password": "12345678"
 }
+
+> {%
+    client.global.set("authToken", "Bearer " + response.body.token);
+%}
 
 ### Create user
 POST {{baseUrl}}/users
@@ -99,4 +100,19 @@ Authorization: {{authToken}}
 
 ### Delete tag
 DELETE {{baseUrl}}/tags/98ac13d2-d453-4da6-9d18-c9d54340eaab
+Authorization: {{authToken}}
+
+### Associate tag with user
+POST {{baseUrl}}/users/me/tags
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "tagIds": [
+      "71f68257-a625-42c6-ac12-9cb6d2efd831"
+    ]
+}
+
+### Disassociate tag from user
+DELETE {{baseUrl}}/users/me/tags/71f68257-a625-42c6-ac12-9cb6d2efd831
 Authorization: {{authToken}}

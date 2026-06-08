@@ -4,6 +4,7 @@ import com.eng.software.mova.domain.model.Tag;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface TagRepositoryPort {
@@ -15,4 +16,5 @@ public interface TagRepositoryPort {
     Tag save(Tag tag);
     Tag update(Tag tag);
     void deleteById(UUID id);
+    long countByIdIn(Set<UUID> ids);
 }

@@ -12,6 +12,7 @@ import com.eng.software.mova.shared.exceptions.ApiException;
 import com.eng.software.mova.shared.exceptions.ResourceAlreadyExistsException;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.UserConverter;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -35,6 +37,7 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final Auth0JwtTokenProvider jwtTokenProvider;
     private final EmailGateway emailGateway;
+    private final TagService tagService;
 
     @Value("${app.passwordResetBaseUrl}")
     private String passwordResetBaseUrl;
@@ -132,6 +135,32 @@ public class UserService {
         user.setPassword(encoder.encode(password));
         user.setUpdatedAt(LocalDateTime.now());
         userRepositoryPort.update(user);
+    }
+
+    @Transactional
+    public void addTagToUser(UUID id, Set<UUID> tagsId) {
+            User user = userRepositoryPort.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+            tagService.verifyAllTagsExist(tagsId);
+
+            user.getTagsId().addAll(tagsId);
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepositoryPort.update(user);
+    }
+
+    @Transactional
+    public void removeTagFromUser(UUID userId, UUID tagId) {
+        User user = userRepositoryPort.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        tagService.verifyAllTagsExist(Set.of(tagId));
+
+        boolean removed = user.getTagsId().remove(tagId);
+
+        if (removed) {
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepositoryPort.update(user);
+        }
     }
 }
 

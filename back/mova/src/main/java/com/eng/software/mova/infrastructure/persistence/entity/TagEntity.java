@@ -1,11 +1,6 @@
 package com.eng.software.mova.infrastructure.persistence.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -13,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -30,4 +27,8 @@ public class TagEntity {
 
     @Column(name = "tag_name", nullable = false, unique = true, length = 100)
     private String tagName;
+
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserEntity> users = new HashSet<>();
 }

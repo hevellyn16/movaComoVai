@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -62,5 +63,10 @@ public class TagRepository implements TagRepositoryPort {
     @Override
     public void deleteById(UUID id) {
         tagJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public long countByIdIn(Set<UUID> ids) {
+        return tagJpaRepository.countByIdIn(ids);
     }
 }

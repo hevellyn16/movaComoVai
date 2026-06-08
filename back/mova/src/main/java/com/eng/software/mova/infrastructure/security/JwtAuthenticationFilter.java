@@ -47,11 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             request.setAttribute("userId", userDetails.getId());
 
-            log.debug("JWT Auth Filter - User authenticated: {}", username);
-            log.trace("Authorities loaded: {}", userDetails.getAuthorities());
-
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+                    userDetails.getId(), null, userDetails.getAuthorities());
 
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -60,11 +57,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (JWTVerificationException | UsernameNotFoundException e) {
             SecurityContextHolder.clearContext();
-            log.error("JWT Verification Error: {}", e.getMessage());
             entryPoint.commence(request, response, new BadCredentialsException("Invalid or expired token", e));
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
-            log.error("Authentication Error", e);
             entryPoint.commence(request, response, new BadCredentialsException("Authentication error", e));
         }
     }

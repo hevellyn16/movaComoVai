@@ -52,7 +52,7 @@ public class Auth0JwtTokenProvider {
 
         var jwtBuilder = JWT.create()
                 .withIssuer(ISSUER)
-                .withSubject(userDetails.getUsername())
+                .withSubject(userDetails.getEmail())
                 .withIssuedAt(now)
                 .withExpiresAt(expiryDate)
                 .withClaim("roles", roles);

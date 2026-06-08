@@ -5,10 +5,13 @@ import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
 import com.eng.software.mova.domain.model.User;
 import com.eng.software.mova.domain.model.enums.UserType;
+import com.eng.software.mova.infrastructure.persistence.entity.TagEntity;
 import com.eng.software.mova.infrastructure.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Component
 public class UserConverter {
@@ -25,6 +28,9 @@ public class UserConverter {
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
                 .isActive(userEntity.isActive())
+                .tagsId(userEntity.getTags() != null ?
+                        userEntity.getTags().stream().map(TagEntity::getId).collect(Collectors.toSet())
+                        : new HashSet<>())
                 .build();
     }
 
@@ -40,6 +46,9 @@ public class UserConverter {
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .isActive(user.isActive())
+                .tags(user.getTagsId() != null ? user.getTagsId().stream().map(
+                        tagId -> TagEntity.builder().id(tagId).build()
+                ).collect(Collectors.toSet()) : new HashSet<>())
                 .build();
     }
 

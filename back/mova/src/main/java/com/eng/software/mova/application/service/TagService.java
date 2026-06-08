@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -69,5 +70,17 @@ public class TagService {
         }
 
         tagRepositoryPort.deleteById(id);
+    }
+
+    public void verifyAllTagsExist(Set<UUID> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            return;
+        }
+
+        long existingTagsCount = tagRepositoryPort.countByIdIn(tagIds);
+
+        if (existingTagsCount != tagIds.size()) {
+            throw new ResourceNotFoundException("One or more tags not found with ids: " + tagIds);
+        }
     }
 }
