@@ -116,3 +116,48 @@ Authorization: {{authToken}}
 ### Disassociate tag from user
 DELETE {{baseUrl}}/users/me/tags/71f68257-a625-42c6-ac12-9cb6d2efd831
 Authorization: {{authToken}}
+
+### Create venue - ADMIN
+POST {{baseUrl}}/venues
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "name": "Theatro São João",
+  "number": "123",
+  "city": "Sobral",
+  "street": "Praça São João",
+  "neighborhood": "Centro",
+  "landmark": "Em frente à praça principal",
+  "hasParkingLot": false,
+  "hasAccessibility": true,
+  "hasBathroom": true,
+  "hasFoodsAndDrinks": false
+}
+
+### List venues (Pagination) - USER/ADMIN
+GET {{baseUrl}}/venues?page=0&size=10
+Authorization: {{authToken}}
+
+### Search venues with filters - USER/ADMIN
+GET {{baseUrl}}/venues/search?city=Sobral&neighborhood=Centro&name=Theatro
+Authorization: {{authToken}}
+
+### Get venue by id - USER/ADMIN
+GET {{baseUrl}}/venues/8f74bf2f-a78d-4ead-8f8e-1a5a597484a2
+Authorization: {{authToken}}
+
+### Update venue - ADMIN
+PUT {{baseUrl}}/venues/8f74bf2f-a78d-4ead-8f8e-1a5a597484a2
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "hasParkingLot": true,
+  "hasFoodsAndDrinks": true,
+  "landmark": "Ao lado da nova cafeteria"
+}
+
+### Delete venue - ADMIN
+DELETE {{baseUrl}}/venues/8f74bf2f-a78d-4ead-8f8e-1a5a597484a2
+Authorization: {{authToken}}
