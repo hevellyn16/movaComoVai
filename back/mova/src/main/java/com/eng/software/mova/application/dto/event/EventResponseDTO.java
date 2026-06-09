@@ -2,6 +2,7 @@ package com.eng.software.mova.application.dto.event;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ public record EventResponseDTO(
         UUID creatorId,
         UUID venueId,
         String venueName,
-        Set<String> tags
+        Set<String> tags,
+        List<EventScheduleResponseDTO> schedules
 ) {
 }
+

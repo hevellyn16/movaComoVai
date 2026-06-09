@@ -20,4 +20,5 @@ public interface EventRepositoryPort {
     Page<Event> search(String q, LocalDateTime dateFrom, LocalDateTime dateTo, BigDecimal priceMin, BigDecimal priceMax, String neighborhood, Pageable pageable);
 
     void deletePictureById(UUID pictureId);
+    void deleteScheduleById(UUID scheduleId);
 }

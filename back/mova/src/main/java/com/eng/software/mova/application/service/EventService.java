@@ -1,6 +1,8 @@
 package com.eng.software.mova.application.service;
 
 import com.eng.software.mova.application.dto.event.EventCreateDTO;
+import com.eng.software.mova.application.dto.event.EventScheduleCreateDTO;
+import com.eng.software.mova.application.dto.event.EventScheduleUpdateDTO;
 import com.eng.software.mova.application.dto.event.EventUpdateDTO;
 import com.eng.software.mova.domain.model.*;
 import com.eng.software.mova.domain.port.EventRepositoryPort;
@@ -180,4 +182,61 @@ public class EventService {
             throw new ResourceNotFoundException("Picture not found for this event.");
         }
     }
-}
+
+    @Transactional
+    public void addScheduleToEvent(UUID eventId, EventScheduleCreateDTO dto) {
+        Event event = findById(eventId);
+
+        if (event.getSchedules() == null) {
+            event.setSchedules(new HashSet<>());
+        }
+
+        EventSchedule newSchedule = EventSchedule.builder()
+                .title(dto.title())
+                .description(dto.description())
+                .scheduleTime(dto.scheduleTime())
+                .build();
+
+        event.getSchedules().add(newSchedule);
+        event.setUpdatedAt(LocalDateTime.now());
+
+        eventRepositoryPort.save(event);
+    }
+
+    @Transactional
+    public void updateSchedule(UUID eventId, UUID scheduleId, EventScheduleUpdateDTO dto) {
+        Event event = findById(eventId);
+
+        EventSchedule schedule = event.getSchedules() != null ?
+                event.getSchedules().stream()
+                        .filter(s -> s.getId().equals(scheduleId))
+                        .findFirst()
+                        .orElseThrow(() -> new ResourceNotFoundException("Programação não encontrada para este evento."))
+                : null;
+
+        if (schedule == null) {
+            throw new ResourceNotFoundException("Programação não encontrada para este evento.");
+        }
+
+        if (dto.title() != null) schedule.setTitle(dto.title());
+        if (dto.description() != null) schedule.setDescription(dto.description());
+        if (dto.scheduleTime() != null) schedule.setScheduleTime(dto.scheduleTime());
+
+        event.setUpdatedAt(LocalDateTime.now());
+        eventRepositoryPort.save(event);
+    }
+
+    @Transactional
+    public void removeScheduleFromEvent(UUID eventId, UUID scheduleId) {
+        Event event = findById(eventId);
+
+        boolean hasSchedule = event.getSchedules() != null &&
+                event.getSchedules().stream().anyMatch(s -> s.getId().equals(scheduleId));
+
+        if (hasSchedule) {
+            eventRepositoryPort.deleteScheduleById(scheduleId);
+        } else {
+            throw new ResourceNotFoundException("Programação não encontrada para este evento.");
+        }
+    }
+}

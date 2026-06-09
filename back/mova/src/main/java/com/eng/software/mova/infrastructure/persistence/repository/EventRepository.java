@@ -58,4 +58,9 @@ public class EventRepository implements EventRepositoryPort {
     public Page<Event> search(String q, LocalDateTime dateFrom, LocalDateTime dateTo, BigDecimal priceMin, BigDecimal priceMax, String neighborhood, Pageable pageable) {
         return jpaRepository.searchEvents(q, dateFrom, dateTo, priceMin, priceMax, neighborhood, pageable).map(EventConverter::entityToDomain);
     }
+
+    @Override
+    public void deleteScheduleById(UUID scheduleId) {
+        jpaRepository.deleteScheduleById(scheduleId);
+    }
 }

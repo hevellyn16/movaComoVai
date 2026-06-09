@@ -1,13 +1,17 @@
 package com.eng.software.mova.shared.utils;
 
 import com.eng.software.mova.application.dto.event.EventResponseDTO;
+import com.eng.software.mova.application.dto.event.EventScheduleResponseDTO;
 import com.eng.software.mova.domain.model.Event;
 import com.eng.software.mova.domain.model.EventPicture;
+import com.eng.software.mova.domain.model.EventSchedule;
 import com.eng.software.mova.domain.model.Tag;
 import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
 import com.eng.software.mova.infrastructure.persistence.entity.EventPictureEntity;
+import com.eng.software.mova.infrastructure.persistence.entity.EventScheduleEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,6 +38,14 @@ public class EventConverter {
                         .map(picEntity -> EventPicture.builder()
                                 .id(picEntity.getId())
                                 .pictureUrl(picEntity.getPictureUrl())
+                                .build())
+                        .collect(Collectors.toSet()) : null)
+                .schedules(entity.getSchedules() != null ? entity.getSchedules().stream()
+                        .map(schedEntity -> EventSchedule.builder()
+                                .id(schedEntity.getId())
+                                .title(schedEntity.getTitle())
+                                .description(schedEntity.getDescription())
+                                .scheduleTime(schedEntity.getScheduleTime())
                                 .build())
                         .collect(Collectors.toSet()) : null)
                 .build();
@@ -70,11 +82,31 @@ public class EventConverter {
             entity.setPictures(pictureEntities);
         }
 
+        if (domain.getSchedules() != null) {
+            Set<EventScheduleEntity> scheduleEntities = domain.getSchedules().stream().map(sched -> {
+                EventScheduleEntity schedEntity = new EventScheduleEntity();
+                schedEntity.setId(sched.getId());
+                schedEntity.setTitle(sched.getTitle());
+                schedEntity.setDescription(sched.getDescription());
+                schedEntity.setScheduleTime(sched.getScheduleTime());
+                schedEntity.setEvent(entity);
+                return schedEntity;
+            }).collect(Collectors.toSet());
+
+            entity.setSchedules(scheduleEntities);
+        }
+
         return entity;
     }
 
     public static EventResponseDTO domainToResponse(Event domain) {
         if (domain == null) return null;
+
+        List<EventScheduleResponseDTO> schedules = domain.getSchedules() != null ?
+                domain.getSchedules().stream()
+                        .map(s -> new EventScheduleResponseDTO(s.getId(), s.getTitle(), s.getDescription(), s.getScheduleTime()))
+                        .collect(Collectors.toList()) : null;
+
         return new EventResponseDTO(
                 domain.getId(),
                 domain.getEventName(),
@@ -87,7 +119,8 @@ public class EventConverter {
                 domain.getVenue() != null ? domain.getVenue().getId() : null,
                 domain.getVenue() != null ? domain.getVenue().getName() : null,
                 domain.getTags() != null ? domain.getTags().stream()
-                        .map(Tag::getTagName).collect(Collectors.toSet()) : null
+                        .map(Tag::getTagName).collect(Collectors.toSet()) : null,
+                schedules
         );
     }
 }

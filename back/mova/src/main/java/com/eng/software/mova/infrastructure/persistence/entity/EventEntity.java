@@ -69,6 +69,11 @@ public class EventEntity {
     @EqualsAndHashCode.Exclude
     private Set<EventPictureEntity> pictures = new HashSet<>();
 
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @EqualsAndHashCode.Exclude
+    private Set<EventScheduleEntity> schedules = new HashSet<>();
+
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {

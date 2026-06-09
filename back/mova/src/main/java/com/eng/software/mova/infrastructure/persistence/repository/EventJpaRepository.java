@@ -37,4 +37,8 @@ public interface EventJpaRepository extends JpaRepository<EventEntity, UUID> {
     @Modifying
     @Query("DELETE FROM EventPictureEntity p WHERE p.id = :pictureId")
     void deletePictureById(@Param("pictureId") UUID pictureId);
+
+    @Modifying
+    @Query("DELETE FROM EventScheduleEntity s WHERE s.id = :scheduleId")
+    void deleteScheduleById(@Param("scheduleId") UUID scheduleId);
 }

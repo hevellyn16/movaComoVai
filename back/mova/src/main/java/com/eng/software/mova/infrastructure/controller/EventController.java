@@ -128,4 +128,36 @@ public class EventController {
         service.removePictureFromEvent(eventId, pictureId);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{eventId}/schedules")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> addScheduleToEvent(
+            @PathVariable UUID eventId,
+            @RequestBody @Valid EventScheduleCreateDTO dto) {
+
+        service.addScheduleToEvent(eventId, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/{eventId}/schedules/{scheduleId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> updateSchedule(
+            @PathVariable UUID eventId,
+            @PathVariable UUID scheduleId,
+            @RequestBody @Valid EventScheduleUpdateDTO dto) {
+
+        service.updateSchedule(eventId, scheduleId, dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{eventId}/schedules/{scheduleId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removeScheduleFromEvent(
+            @PathVariable UUID eventId,
+            @PathVariable UUID scheduleId) {
+
+        service.removeScheduleFromEvent(eventId, scheduleId);
+        return ResponseEntity.noContent().build();
+    }
 }
+
