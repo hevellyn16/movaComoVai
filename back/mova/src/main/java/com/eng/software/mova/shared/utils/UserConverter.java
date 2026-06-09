@@ -22,8 +22,15 @@ public class UserConverter {
         return User.builder()
                 .id(userEntity.getId())
                 .name(userEntity.getName())
+                .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
                 .password(userEntity.getPassword())
+                .avatarUrl(userEntity.getAvatarUrl())
+                .bio(userEntity.getBio())
+                .location(userEntity.getLocation())
+                .isPrivate(userEntity.isPrivate())
+                .pushNotifications(userEntity.isPushNotifications())
+                .emailNotifications(userEntity.isEmailNotifications())
                 .userType(userEntity.getUserType())
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
@@ -40,8 +47,15 @@ public class UserConverter {
         return UserEntity.builder()
                 .id(user.getId())
                 .name(user.getName())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .avatarUrl(user.getAvatarUrl())
+                .bio(user.getBio())
+                .location(user.getLocation())
+                .isPrivate(user.isPrivate())
+                .pushNotifications(user.isPushNotifications())
+                .emailNotifications(user.isEmailNotifications())
                 .userType(user.getUserType())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
@@ -58,7 +72,12 @@ public class UserConverter {
         return UserResponseDTO.builder()
                 .id(user.getId())
                 .name(user.getName())
+                .username(user.getUsername())
                 .email(user.getEmail())
+                .avatarUrl(user.getAvatarUrl())
+                .bio(user.getBio())
+                .location(user.getLocation())
+                .isPrivate(user.isPrivate())
                 .userType(user.getUserType().name())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
@@ -71,21 +90,33 @@ public class UserConverter {
 
         return User.builder()
                 .name(dto.name())
+                .username(dto.username())
                 .email(dto.email())
                 .password(dto.password())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .userType(UserType.COMMON)
                 .isActive(true)
+                .isPrivate(false)
+                .pushNotifications(true)
+                .emailNotifications(true)
                 .build();
     }
 
     public static User updateUserFromDTO(User user, UserUpdateDTO dto) {
         if (user == null || dto == null) return null;
 
-        user.setName(dto.name() != null ? dto.name() : user.getName());
-        user.setEmail(dto.email() != null ? dto.email() : user.getEmail());
-        user.setPassword(dto.password() != null ? dto.password() : user.getPassword());
+        if (dto.name() != null) user.setName(dto.name());
+        if (dto.username() != null) user.setUsername(dto.username());
+        if (dto.email() != null) user.setEmail(dto.email());
+        if (dto.password() != null) user.setPassword(dto.password());
+        if (dto.avatarUrl() != null) user.setAvatarUrl(dto.avatarUrl());
+        if (dto.bio() != null) user.setBio(dto.bio());
+        if (dto.location() != null) user.setLocation(dto.location());
+        if (dto.isPrivate() != null) user.setPrivate(dto.isPrivate());
+        if (dto.pushNotifications() != null) user.setPushNotifications(dto.pushNotifications());
+        if (dto.emailNotifications() != null) user.setEmailNotifications(dto.emailNotifications());
+
         user.setUpdatedAt(LocalDateTime.now());
 
         return user;

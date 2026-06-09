@@ -68,4 +68,9 @@ public class UserRepository implements UserRepositoryPort {
     public void deleteById(UUID id) {
         userJpaRepository.deleteById(id);
     }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userJpaRepository.existsByUsername(username);
+    }
 }

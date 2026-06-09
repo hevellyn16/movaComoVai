@@ -17,4 +17,5 @@ public interface UserRepositoryPort {
     User save(User user);
     User update(User user);
     void deleteById(UUID id);
+    boolean existsByUsername(String username);
 }

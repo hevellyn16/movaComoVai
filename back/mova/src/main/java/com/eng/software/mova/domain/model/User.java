@@ -23,5 +23,12 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isActive;
+    private String username;
+    private String avatarUrl;
+    private String bio;
+    private String location;
+    private boolean isPrivate;
+    private boolean pushNotifications;
+    private boolean emailNotifications;
     private Set<UUID> tagsId;
 }

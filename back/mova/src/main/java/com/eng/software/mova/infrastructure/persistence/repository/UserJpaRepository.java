@@ -17,4 +17,6 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
     @Query("UPDATE UserEntity u SET u.isActive = false WHERE u.id = :id")
     @Modifying
     void deleteById(UUID id);
+
+    boolean existsByUsername(String username);
 }

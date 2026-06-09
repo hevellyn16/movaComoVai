@@ -73,11 +73,10 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<UserResponseDTO> update(@Valid @RequestBody UserUpdateDTO dto,
-                                                  @AuthenticationPrincipal CustomUserDetails authenticatedUser) {
-        if (authenticatedUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                                                  @RequestAttribute String userId) {
+        if (userId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        UUID id = authenticatedUser.getId();
-        return ResponseEntity.ok(userService.update(id, dto));
+        return ResponseEntity.ok(userService.update(UUID.fromString(userId), dto));
     }
 
     @PutMapping("/{id}/admin")
@@ -88,11 +87,10 @@ public class UserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> delete(@AuthenticationPrincipal CustomUserDetails authenticatedUser) {
-        if (authenticatedUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<?> delete(@RequestAttribute String userId) {
+        if (userId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        UUID id = authenticatedUser.getId();
-        userService.delete(id);
+        userService.delete(UUID.fromString(userId));
 
         return ResponseEntity.noContent().build();
     }

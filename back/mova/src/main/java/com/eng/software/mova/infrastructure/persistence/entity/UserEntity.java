@@ -46,6 +46,30 @@ public class UserEntity {
 
     private LocalDateTime updatedAt;
 
+    @Column(unique = true, length = 50)
+    private String username;
+
+    @Column(name = "avatar_url", length = 500)
+    private String avatarUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    @Column(length = 100)
+    private String location;
+
+    @Column(name = "is_private", nullable = false)
+    @Builder.Default
+    private boolean isPrivate = false;
+
+    @Column(name = "push_notifications", nullable = false)
+    @Builder.Default
+    private boolean pushNotifications = true;
+
+    @Column(name = "email_notifications", nullable = false)
+    @Builder.Default
+    private boolean emailNotifications = true;
+
     @Column(nullable = false)
     @Builder.Default
     private boolean isActive = true;

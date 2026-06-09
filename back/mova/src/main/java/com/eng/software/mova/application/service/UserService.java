@@ -69,6 +69,10 @@ public class UserService {
             throw new ResourceAlreadyExistsException("User already exists with email: " + dto.email());
         }
 
+        if (userRepositoryPort.existsByUsername(dto.username())) {
+            throw new ResourceAlreadyExistsException("Username already taken: " + dto.username());
+        }
+
         User user = UserConverter.createDTOToDomain(dto);
         user.setPassword(encoder.encode(dto.password()));
 
@@ -83,6 +87,12 @@ public class UserService {
 
         if (!existing.getEmail().equals(updated.getEmail()) && userRepositoryPort.existsByEmail(updated.getEmail())) {
             throw new ResourceAlreadyExistsException("User already exists with email: " + updated.getEmail());
+        }
+
+        if (updated.getUsername() != null && !updated.getUsername().equals(existing.getUsername())) {
+            if (userRepositoryPort.existsByUsername(updated.getUsername())) {
+                throw new ResourceAlreadyExistsException("Username already taken: " + updated.getUsername());
+            }
         }
 
         return UserConverter.domainToResponse(userRepositoryPort.update(updated));

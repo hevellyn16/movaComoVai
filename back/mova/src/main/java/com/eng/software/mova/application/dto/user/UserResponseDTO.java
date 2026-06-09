@@ -9,7 +9,12 @@ import java.util.UUID;
 public record UserResponseDTO(
         UUID id,
         String name,
+        String username,
         String email,
+        String avatarUrl,
+        String bio,
+        String location,
+        boolean isPrivate,
         String userType,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
