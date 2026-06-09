@@ -77,6 +77,18 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(EventConverter.domainToResponse(createdEvent));
     }
 
+    @PostMapping("/{eventId}/likes")
+    public ResponseEntity<Void> likeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.likeEvent(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{eventId}/unlikes")
+    public ResponseEntity<Void> unlikeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.unlikeEvent(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid EventUpdateDTO dto) {

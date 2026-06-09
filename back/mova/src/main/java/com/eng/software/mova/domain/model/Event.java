@@ -27,4 +27,5 @@ public class Event {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Set<Tag> tags;
+    private Set<UUID> likedByUsers;
 }

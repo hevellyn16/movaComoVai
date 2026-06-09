@@ -16,6 +16,7 @@ public record EventResponseDTO(
         UUID creatorId,
         UUID venueId,
         String venueName,
-        Set<String> tags
+        Set<String> tags,
+        Set<UUID> likedByUserIds
 ) {
 }

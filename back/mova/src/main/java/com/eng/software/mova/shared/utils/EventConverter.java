@@ -4,6 +4,7 @@ import com.eng.software.mova.application.dto.event.EventResponseDTO;
 import com.eng.software.mova.domain.model.Event;
 import com.eng.software.mova.domain.model.Tag;
 import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
+import com.eng.software.mova.infrastructure.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -27,6 +28,8 @@ public class EventConverter {
                 .updatedAt(entity.getUpdatedAt())
                 .tags(entity.getTags() != null ? entity.getTags().stream()
                         .map(TagConverter::entityToDomain).collect(Collectors.toSet()) : null)
+                .likedByUsers(entity.getLikedByUsers() != null ? entity.getLikedByUsers().stream()
+                        .map(UserEntity::getId).collect(Collectors.toSet()) : null)
                 .build();
     }
 
@@ -46,6 +49,8 @@ public class EventConverter {
                 .updatedAt(domain.getUpdatedAt())
                 .tags(domain.getTags() != null ? domain.getTags().stream()
                         .map(TagConverter::domainToEntity).collect(Collectors.toSet()) : null)
+                .likedByUsers(domain.getLikedByUsers() != null ? domain.getLikedByUsers().stream()
+                        .map(id -> UserEntity.builder().id(id).build()).collect(Collectors.toSet()) : null)
                 .build();
     }
 
@@ -63,7 +68,8 @@ public class EventConverter {
                 domain.getVenue() != null ? domain.getVenue().getId() : null,
                 domain.getVenue() != null ? domain.getVenue().getName() : null,
                 domain.getTags() != null ? domain.getTags().stream()
-                        .map(Tag::getTagName).collect(Collectors.toSet()) : null
+                        .map(Tag::getTagName).collect(Collectors.toSet()) : null,
+                domain.getLikedByUsers() != null ? domain.getLikedByUsers() : null
         );
     }
 }

@@ -62,9 +62,20 @@ public class EventEntity {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<TagEntity> tags;
+    @Builder.Default
+    private Set<TagEntity> tags = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_likes",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Builder.Default
+    private Set<UserEntity> likedByUsers = new HashSet<>();
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<EventPictureEntity> pictures = new HashSet<>();
 
     @PrePersist

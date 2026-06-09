@@ -24,4 +24,5 @@ public class User {
     private LocalDateTime updatedAt;
     private boolean isActive;
     private Set<UUID> tagsId;
+    private Set<UUID> likedEvents;
 }

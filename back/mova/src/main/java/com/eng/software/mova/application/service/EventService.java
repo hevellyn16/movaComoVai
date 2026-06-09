@@ -120,4 +120,25 @@ public class EventService {
         findById(id);
         eventRepositoryPort.deleteById(id);
     }
+
+    @Transactional
+    public void likeEvent(UUID eventId, UUID id) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with id " + eventId));
+        User user = userRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+
+        event.getLikedByUsers().add(user.getId());
+        eventRepositoryPort.save(event);
+    }
+
+    @Transactional
+    public void unlikeEvent(UUID eventId, UUID id) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with id " + eventId));
+        User user = userRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+        event.getLikedByUsers().remove(user.getId());
+        eventRepositoryPort.save(event);
+    }
 }
