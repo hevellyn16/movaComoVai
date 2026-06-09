@@ -1,0 +1,63 @@
+import { Event } from "@/types/event.types";
+
+export const featuredEvent: Event = {
+	id: "1",
+	userId: "user-1",
+	eventName: "Festival Noites de Caju",
+	description: "O maior festival cultural de Sobral",
+	contentRating: "Livre",
+	price: 0,
+	startsAt: new Date().toISOString(),
+	endsAt: new Date().toISOString(),
+	venueId: "venue-1",
+	createdAt: new Date().toISOString(),
+	pictures: [{ id: "pic-1", pictureUrl: "https://i.pinimg.com/736x/e6/6e/e4/e66ee4797bffdc749def32aa56f88232.jpg", eventId: "1" }],
+	tags: [{ id: "tag-1", tagname: "Música" }],
+	venue: {
+		id: "venue-1",
+		name: "Arco do Triunfo",
+		number: "S/N",
+		city: "Sobral",
+		street: "Centro",
+		neighborhood: "Centro",
+		hasParkingLot: true,
+		hasAccessibility: true,
+		hasBathroom: true,
+		hasFoodsAndDrinks: true,
+	},
+	likesCount: 120,
+	isFavorited: false,
+	isLiked: false,
+};
+
+export const nextEvents: Event[] = [
+	{
+		id: "2",
+		userId: "user-2",
+		eventName: "Samba na Varanda do Museu",
+		description:
+			"Venha celebrar o melhor do samba de raiz com artistas locais em um dos cenários mais bonitos da cidade.",
+		contentRating: "Livre",
+		price: 20.0,
+		startsAt: "2026-05-12T18:00:00.000Z",
+		endsAt: "2026-05-12T22:00:00.000Z",
+		venueId: "venue-2",
+		createdAt: new Date().toISOString(),
+		pictures: [{ id: "pic-2", pictureUrl: "https://i.pinimg.com/736x/fa/e4/a8/fae4a85c120fc7c9f88334f323aa9ce5.jpg", eventId: "2" }],
+		tags: [{ id: "tag-1", tagname: "Música Local" }],
+		venue: {
+			id: "venue-2",
+			name: "Museu Dom José",
+			number: "S/N",
+			city: "Sobral",
+			street: "Rua Conselheiro Rodrigues",
+			neighborhood: "Centro",
+			hasParkingLot: false,
+			hasAccessibility: true,
+			hasBathroom: true,
+			hasFoodsAndDrinks: false,
+		},
+		isFavorited: false,
+		isLiked: false,
+	},
+];

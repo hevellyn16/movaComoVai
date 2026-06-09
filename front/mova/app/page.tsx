@@ -1,10 +1,5 @@
-import Header from "../components/layout/header";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <main>
-      <Header />
-    </main>
-  );
-
+  redirect("/feed");
 }
