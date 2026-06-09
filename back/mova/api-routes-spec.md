@@ -31,7 +31,7 @@ Legenda de acesso:
 ### Rotas necessárias para RF01 e RF02
 
 | Método | Rota                            |        Acesso | Finalidade                                          |
-| ------ | ------------------------------- | ------------: | --------------------------------------------------- |
+| ------ |---------------------------------| ------------: |-----------------------------------------------------|
 | POST   | `/auth/sso/google`              |       Público | Login/cadastro via Google SSO.                      |
 | POST   | `/auth/sso/apple`               |       Público | Login/cadastro via Apple SSO.                       |
 | GET    | `/users/me`                     | Usuário/Admin | Retornar perfil do usuário autenticado.             |
@@ -39,6 +39,8 @@ Legenda de acesso:
 | GET    | `/users/me/preferences`         | Usuário/Admin | Consultar preferências cadastradas do usuário.      |
 | PUT    | `/users/me/preferences`         | Usuário/Admin | Atualizar preferências/tags do perfil.              |
 | DELETE | `/users/me/preferences/{tagId}` | Usuário/Admin | Remover uma preferência de tag.                     |
+| GET | `/users/profile/{username}`     | Público/Usuário | Visualizar o perfil público de um usuário           |
+| POST | `/users/me/avatar`              | Usuário | Fazer upload da foto de perfil (avatar_url).        |
 
 ## 2. Tags
 
@@ -79,18 +81,35 @@ Tabelas relacionadas nas migrations: `events`, `event_tags`, `event_pictures`.
 
 ### Rotas necessárias para RF04 e RF05
 
-| Método | Rota                                                                    |        Acesso | Finalidade                                         |
-| ------ | ----------------------------------------------------------------------- | ------------: | -------------------------------------------------- |
-| GET    | `/events`                                                               | Usuário/Admin | Listar eventos com paginação, ordenação e filtros. |
-| GET    | `/events/{id}`                                                          | Usuário/Admin | Consultar evento por ID.                           |
-| POST   | `/events`                                                               |         Admin | Cadastrar evento com todos os campos obrigatórios. |
-| PUT    | `/events/{id}`                                                          |         Admin | Atualizar evento.                                  |
-| DELETE | `/events/{id}`                                                          |         Admin | Excluir evento.                                    |
-| GET    | `/events/search?q=&dateFrom=&dateTo=&priceMin=&priceMax=&neighborhood=` | Usuário/Admin | Busca textual livre e filtros avançados.           |
-| GET    | `/events/today`                                                         | Usuário/Admin | Listar eventos do dia.                             |
-| GET    | `/events/upcoming`                                                      | Usuário/Admin | Listar eventos futuros.                            |
-| POST   | `/events/{eventId}/pictures`                                            |         Admin | Adicionar imagens ao evento.                       |
-| DELETE | `/events/{eventId}/pictures/{pictureId}`                                |         Admin | Remover imagem do evento.                          |
+| Método | Rota                                                                    |        Acesso | Finalidade                                           |
+| ------ |-------------------------------------------------------------------------| ------------: |------------------------------------------------------|
+| GET    | `/events`                                                               | Usuário/Admin | Listar eventos com paginação, ordenação e filtros.   |
+| GET    | `/events/{id}`                                                          | Usuário/Admin | Consultar evento por ID.                             |
+| POST   | `/events`                                                               |         Admin | Cadastrar evento com todos os campos obrigatórios.   |
+| PUT    | `/events/{id}`                                                          |         Admin | Atualizar evento.                                    |
+| DELETE | `/events/{id}`                                                          |         Admin | Excluir evento.                                      |
+| GET    | `/events/search?q=&dateFrom=&dateTo=&priceMin=&priceMax=&neighborhood=` | Usuário/Admin | Busca textual livre e filtros avançados.             |
+| GET    | `/events/today`                                                         | Usuário/Admin | Listar eventos do dia.                               |
+| GET    | `/events/upcoming`                                                      | Usuário/Admin | Listar eventos futuros.                              |
+| POST   | `/events/{eventId}/pictures`                                            |         Admin | Adicionar imagens ao evento.                         |
+| DELETE | `/events/{eventId}/pictures/{pictureId}`                                |         Admin | Remover imagem do evento.                            |
+| POST | `/events/{eventId}/schedules`                                           | Admin | Adicionar um item à programação do evento.           |
+| PUT | `/events/{eventId}/schedules/{scheduleId}`                              | Admin | Atualizar horário/título de uma programação.         |
+| DELETE | `/events/{eventId}/schedules/{scheduleId}`                              | Admin | Remover um item da programação.                      |
+
+## 5. Ingressos e Transações (Tickets)
+
+Tabela relacionada na migration: `tickets`.
+
+### Rotas necessárias
+
+| Método | Rota | Acesso | Finalidade |
+| ------ | ---- | -----: | ---------- |
+| POST | `/checkout` | Usuário | Iniciar compra de ingresso para um evento. |
+| GET | `/users/me/tickets` | Usuário | Listar carteira de ingressos comprados pelo usuário. |
+| GET | `/tickets/{id}` | Usuário/Admin | Consultar detalhes de um ingresso específico (geração do QR Code). |
+| PATCH | `/tickets/{id}/status` | Admin | Atualizar status do ingresso (ex: PENDING para PAID). |
+| POST | `/tickets/{id}/validate` | Admin | Rota para o staff do evento ler o QR Code e validar a entrada. |
 
 ### Campos esperados no cadastro de evento
 
@@ -108,7 +127,7 @@ Baseado na migration, o payload de criação deve contemplar no mínimo:
 
 Se a regra de negócio exigir infraestrutura do local no evento, isso deve ser refletido no `venue` ou em um DTO agregado.
 
-## 5. Preferências, Contexto e Onboarding
+## 6. Preferências, Contexto e Onboarding
 
 Relacionadas aos RF02 e RF03.
 
@@ -121,7 +140,7 @@ Relacionadas aos RF02 e RF03.
 | PUT    | `/users/me/context`             | Usuário/Admin | Atualizar contexto da sessão.                                       |
 | POST   | `/users/me/onboarding/complete` | Usuário/Admin | Marcar onboarding como concluído.                                   |
 
-## 6. Recomendação e Planos
+## 7. Recomendação e Planos
 
 Cobertura dos RF06, RF07 e RF08.
 
@@ -142,7 +161,7 @@ Cobertura dos RF06, RF07 e RF08.
 - Retorno paginado para feed e planos.
 - Possibilidade de incluir distância, bairro e tags em comum.
 
-## 7. Interação com Eventos
+## 8. Interação com Eventos
 
 Cobertura do RF09.
 
@@ -159,7 +178,7 @@ Cobertura do RF09.
 | POST   | `/events/{eventId}/likes`       | Usuário/Admin | Curtir evento.                          |
 | DELETE | `/events/{eventId}/likes`       | Usuário/Admin | Remover like de evento.                 |
 
-## 8. Comentários e Respostas
+## 9. Comentários e Respostas
 
 Cobertura das tabelas `comments`, `comment_likes`, `comment_pictures`, `answers`.
 
@@ -179,7 +198,7 @@ Cobertura das tabelas `comments`, `comment_likes`, `comment_pictures`, `answers`
 | PUT    | `/answers/{answerId}`                        | Usuário/Admin | Editar resposta.                |
 | DELETE | `/answers/{answerId}`                        | Usuário/Admin | Excluir resposta.               |
 
-## 9. Busca e Filtros
+## 10. Busca e Filtros
 
 Cobertura do RF10.
 
@@ -191,7 +210,7 @@ Cobertura do RF10.
 | GET    | `/search/venues?q=`                                                   | Usuário/Admin | Busca textual livre em locais.  |
 | GET    | `/search/feed?q=&dateFrom=&dateTo=&priceMin=&priceMax=&neighborhood=` | Usuário/Admin | Busca avançada combinada.       |
 
-## 10. Integrações Externas
+## 11. Integrações Externas
 
 Cobertura do RNF04.
 
@@ -203,7 +222,7 @@ Cobertura do RNF04.
 | GET    | `/maps/route?origin=&destination=` | Usuário/Admin | Calcular rota para um plano sugerido.   |
 | GET    | `/venues/{id}/location`            | Usuário/Admin | Retornar dados de localização do local. |
 
-## 11. Resumo de Entidades do Banco e Cobertura de Rotas
+## 12. Resumo de Entidades do Banco e Cobertura de Rotas
 
 ### Já cobertas hoje
 
@@ -226,7 +245,7 @@ Cobertura do RNF04.
 - `answers`
 - recomendação e planos personalizados
 
-## 12. Observações de arquitetura
+## 13. Observações de arquitetura
 
 - As rotas de recomendação devem ficar em controllers próprios, separadas da lógica de negócio.
 - Os endpoints administrativos devem exigir role `ADMIN`.
@@ -234,7 +253,7 @@ Cobertura do RNF04.
 - As rotas de busca e feed devem aceitar paginação e ordenação.
 - As rotas de eventos e locais devem refletir a modelagem das migrations, especialmente `venue`, `tags`, `favorites`, `likes`, `comments` e `answers`.
 
-## 13. Mapeamento rápido RF -> Rotas
+## 14. Mapeamento rápido RF -> Rotas
 
 - RF01: `/auth/login`, `/auth/sso/google`, `/auth/sso/apple`, `/users`
 - RF02: `/users/me/onboarding`, `/users/me/preferences`, `/users/me/tags`
