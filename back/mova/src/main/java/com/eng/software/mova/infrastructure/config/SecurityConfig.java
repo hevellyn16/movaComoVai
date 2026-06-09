@@ -38,9 +38,9 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                     .requestMatchers("/error").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/mova/v3/api-docs/**","/mova/swagger-ui.html/**","/mova/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/v3/api-docs/**","/swagger-ui.html/**","/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/forgot-password").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/reset-password").permitAll()

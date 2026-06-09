@@ -1,6 +1,7 @@
 package com.eng.software.mova.domain.port;
 
 import com.eng.software.mova.domain.model.Event;
+import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

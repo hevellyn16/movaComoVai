@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -63,15 +64,8 @@ public class EventEntity {
     )
     private Set<TagEntity> tags;
 
-    /* *
-     * Nota: Você também tem tabelas como `event_pictures`, `event_likes`,
-     * `favorites` e `comments`. Conforme você for criando as entidades
-     * dessas tabelas (ex: EventPictureEntity), você pode adicionar as listas
-     * aqui usando @OneToMany. Exemplo:
-     * * @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-     * @Builder.Default
-     * private Set<EventPictureEntity> pictures = new HashSet<>();
-     */
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EventPictureEntity> pictures = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
