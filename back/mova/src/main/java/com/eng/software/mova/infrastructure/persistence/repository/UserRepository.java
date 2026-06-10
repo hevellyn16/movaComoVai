@@ -73,4 +73,10 @@ public class UserRepository implements UserRepositoryPort {
     public boolean existsByUsername(String username) {
         return userJpaRepository.existsByUsername(username);
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userJpaRepository.findByUsername(username)
+                .map(UserConverter::entityToDomain);
+    }
 }

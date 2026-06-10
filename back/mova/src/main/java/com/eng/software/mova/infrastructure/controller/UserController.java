@@ -2,6 +2,7 @@ package com.eng.software.mova.infrastructure.controller;
 
 import com.eng.software.mova.application.dto.tag.UserTagAssociationDTO;
 import com.eng.software.mova.application.dto.user.UserCreateDTO;
+import com.eng.software.mova.application.dto.user.UserPublicProfileDTO;
 import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
 import com.eng.software.mova.application.dto.auth.EmailRequestDTO;
@@ -18,9 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -111,5 +114,19 @@ public class UserController {
         userService.removeTagFromUser(UUID.fromString(userId), tagId);
         return ResponseEntity.noContent().build();
     }
-}
 
+    @GetMapping("/profile/{username}")
+    public ResponseEntity<UserPublicProfileDTO> getPublicProfile(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getPublicProfile(username));
+    }
+
+    @PostMapping("/me/avatar")
+    public ResponseEntity<Map<String, String>> uploadAvatar(
+            @RequestParam("file") MultipartFile file,
+            @RequestAttribute String userId) {
+        if (userId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        String avatarUrl = userService.uploadAvatar(UUID.fromString(userId), file);
+        return ResponseEntity.ok(Map.of("avatarUrl", avatarUrl));
+    }
+}

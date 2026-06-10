@@ -1,6 +1,7 @@
 package com.eng.software.mova.shared.utils;
 
 import com.eng.software.mova.application.dto.user.UserCreateDTO;
+import com.eng.software.mova.application.dto.user.UserPublicProfileDTO;
 import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
 import com.eng.software.mova.domain.model.User;
@@ -120,5 +121,19 @@ public class UserConverter {
         user.setUpdatedAt(LocalDateTime.now());
 
         return user;
+    }
+
+    public static UserPublicProfileDTO domainToPublicProfile(User user) {
+        if (user == null) return null;
+
+        return UserPublicProfileDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .username(user.getUsername())
+                .avatarUrl(user.getAvatarUrl())
+                .bio(user.getBio())
+                .location(user.getLocation())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }

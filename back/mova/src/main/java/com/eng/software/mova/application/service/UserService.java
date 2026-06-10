@@ -1,6 +1,7 @@
 package com.eng.software.mova.application.service;
 
 import com.eng.software.mova.application.dto.user.UserCreateDTO;
+import com.eng.software.mova.application.dto.user.UserPublicProfileDTO;
 import com.eng.software.mova.application.dto.user.UserResponseDTO;
 import com.eng.software.mova.application.dto.user.UserUpdateDTO;
 import com.eng.software.mova.domain.model.User;
@@ -13,6 +14,7 @@ import com.eng.software.mova.shared.exceptions.ResourceAlreadyExistsException;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.UserConverter;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -22,8 +24,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +48,12 @@ public class UserService {
 
     @Value("${app.passwordResetBaseUrl}")
     private String passwordResetBaseUrl;
+
+    @Value("${app.avatar.upload-dir:uploads/avatars}")
+    private String avatarUploadDir;
+
+    @Value("${app.avatar.base-url:http://localhost:8080/uploads/avatars}")
+    private String avatarBaseUrl;
 
     @Transactional(readOnly = true)
     public UserResponseDTO findById(UUID id) {
@@ -170,6 +183,55 @@ public class UserService {
         if (removed) {
             user.setUpdatedAt(LocalDateTime.now());
             userRepositoryPort.update(user);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public UserPublicProfileDTO getPublicProfile(String username) {
+        User user = userRepositoryPort.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+
+        if (user.isPrivate()) {
+            throw new ApiException("This profile is private", HttpStatus.FORBIDDEN);
+        }
+
+        return UserConverter.domainToPublicProfile(user);
+    }
+
+    public String uploadAvatar(UUID userId, org.springframework.web.multipart.MultipartFile file) {
+        User user = userRepositoryPort.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        if (file.isEmpty()) {
+            throw new ApiException("Avatar file must not be empty", HttpStatus.BAD_REQUEST);
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new ApiException("Only image files are allowed", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Path uploadPath = Paths.get(avatarUploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String originalFilename = StringUtils.cleanPath(file.getOriginalFilename() != null ? file.getOriginalFilename() : "avatar");
+            String extension = originalFilename.contains(".") ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".png";
+            String filename = userId.toString() + "_" + System.currentTimeMillis() + extension;
+
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            String avatarUrl = avatarBaseUrl + "/" + filename;
+            user.setAvatarUrl(avatarUrl);
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepositoryPort.update(user);
+
+            return avatarUrl;
+        } catch (IOException e) {
+            throw new ApiException("Failed to upload avatar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
