@@ -83,12 +83,6 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{eventId}/unlikes")
-    public ResponseEntity<Void> unlikeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
-        service.unlikeEvent(eventId, user.getId());
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/{eventId}/favorites")
     public ResponseEntity<Void> addFavorite(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
         service.addFavorite(eventId, user.getId());
@@ -112,6 +106,12 @@ public class EventController {
     @DeleteMapping("/{eventId}/favorites")
     public ResponseEntity<Void> removeFavorite(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
         service.removeFavorite(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{eventId}/likes")
+    public ResponseEntity<Void> unlikeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.unlikeEvent(eventId, user.getId());
         return ResponseEntity.ok().build();
     }
 }
