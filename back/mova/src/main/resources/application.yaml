@@ -50,3 +50,11 @@ app:
   avatar:
     upload-dir: ${AVATAR_UPLOAD_DIR:uploads/avatars}
     base-url: ${AVATAR_BASE_URL:http://localhost:8080/uploads/avatars}
+
+springdoc:
+  api-docs:
+    path: /mova/v3/api-docs
+  swagger-ui:
+    path: /mova/swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
