@@ -2,6 +2,11 @@ spring:
   application:
     name: mova
 
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 10MB
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/postgres}
     username: ${POSTGRES_USER:user}

@@ -50,4 +50,8 @@ public class CommentEntity {
     )
     @Builder.Default
     private Set<UserEntity> likedByUsers = new HashSet<>();
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<CommentPictureEntity> pictures = new HashSet<>();
 }
