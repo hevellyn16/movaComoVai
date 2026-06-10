@@ -89,6 +89,12 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{eventId}/favorites")
+    public ResponseEntity<Void> addFavorite(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.addFavorite(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid EventUpdateDTO dto) {
@@ -101,5 +107,11 @@ public class EventController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{eventId}/favorites")
+    public ResponseEntity<Void> removeFavorite(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.removeFavorite(eventId, user.getId());
+        return ResponseEntity.ok().build();
     }
 }

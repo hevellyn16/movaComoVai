@@ -62,4 +62,8 @@ public class UserEntity {
     @ManyToMany(mappedBy = "likedByUsers")
     @Builder.Default
     private Set<EventEntity> likedEvents = new HashSet<>();
+
+    @ManyToMany(mappedBy = "favoriteByUsers")
+    @Builder.Default
+    private Set<EventEntity> favoriteEvents = new HashSet<>();
 }

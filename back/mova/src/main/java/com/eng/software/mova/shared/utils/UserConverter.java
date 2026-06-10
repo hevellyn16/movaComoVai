@@ -31,6 +31,9 @@ public class UserConverter {
                 .tagsId(userEntity.getTags() != null ?
                         userEntity.getTags().stream().map(TagEntity::getId).collect(Collectors.toSet())
                         : new HashSet<>())
+                .favoriteEvents(userEntity.getFavoriteEvents() != null ?
+                        userEntity.getFavoriteEvents().stream().map(e -> e.getId()).collect(Collectors.toSet())
+                        : new HashSet<>())
                 .build();
     }
 
@@ -49,6 +52,9 @@ public class UserConverter {
                 .tags(user.getTagsId() != null ? user.getTagsId().stream().map(
                         tagId -> TagEntity.builder().id(tagId).build()
                 ).collect(Collectors.toSet()) : new HashSet<>())
+                .favoriteEvents(user.getFavoriteEvents() != null ?
+                        user.getFavoriteEvents().stream().map(eventId -> com.eng.software.mova.infrastructure.persistence.entity.EventEntity.builder().id(eventId).build()).collect(Collectors.toSet())
+                        : new HashSet<>())
                 .build();
     }
 

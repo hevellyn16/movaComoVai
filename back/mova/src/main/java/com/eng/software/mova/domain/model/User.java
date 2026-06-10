@@ -25,4 +25,5 @@ public class User {
     private boolean isActive;
     private Set<UUID> tagsId;
     private Set<UUID> likedEvents;
+    private Set<UUID> favoriteEvents;
 }

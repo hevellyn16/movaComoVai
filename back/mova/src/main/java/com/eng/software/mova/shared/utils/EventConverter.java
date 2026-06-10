@@ -30,6 +30,8 @@ public class EventConverter {
                         .map(TagConverter::entityToDomain).collect(Collectors.toSet()) : null)
                 .likedByUsers(entity.getLikedByUsers() != null ? entity.getLikedByUsers().stream()
                         .map(UserEntity::getId).collect(Collectors.toSet()) : null)
+                .favoriteByUsers(entity.getFavoriteByUsers() != null ? entity.getFavoriteByUsers().stream()
+                        .map(UserEntity::getId).collect(Collectors.toSet()) : null)
                 .build();
     }
 
@@ -50,6 +52,8 @@ public class EventConverter {
                 .tags(domain.getTags() != null ? domain.getTags().stream()
                         .map(TagConverter::domainToEntity).collect(Collectors.toSet()) : null)
                 .likedByUsers(domain.getLikedByUsers() != null ? domain.getLikedByUsers().stream()
+                        .map(id -> UserEntity.builder().id(id).build()).collect(Collectors.toSet()) : null)
+                .favoriteByUsers(domain.getFavoriteByUsers() != null ? domain.getFavoriteByUsers().stream()
                         .map(id -> UserEntity.builder().id(id).build()).collect(Collectors.toSet()) : null)
                 .build();
     }

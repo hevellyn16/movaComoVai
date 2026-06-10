@@ -141,4 +141,45 @@ public class EventService {
         event.getLikedByUsers().remove(user.getId());
         eventRepositoryPort.save(event);
     }
+
+    @Transactional
+    public void addFavorite(UUID eventId, UUID id) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with id " + eventId));
+        User user = userRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+
+        if (event.getFavoriteByUsers() == null) {
+            event.setFavoriteByUsers(java.util.Collections.singleton(user.getId()));
+        } else {
+            event.getFavoriteByUsers().add(user.getId());
+        }
+
+        // keep user's favorites in sync on domain side
+        if (user.getFavoriteEvents() == null) {
+            user.setFavoriteEvents(java.util.Collections.singleton(event.getId()));
+        } else {
+            user.getFavoriteEvents().add(event.getId());
+        }
+
+        eventRepositoryPort.save(event);
+    }
+
+    @Transactional
+    public void removeFavorite(UUID eventId, UUID id) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with id " + eventId));
+        User user = userRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+
+        if (event.getFavoriteByUsers() != null) {
+            event.getFavoriteByUsers().remove(user.getId());
+        }
+
+        if (user.getFavoriteEvents() != null) {
+            user.getFavoriteEvents().remove(event.getId());
+        }
+
+        eventRepositoryPort.save(event);
+    }
 }

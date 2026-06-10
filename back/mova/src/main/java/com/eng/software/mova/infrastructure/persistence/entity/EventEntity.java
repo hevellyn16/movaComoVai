@@ -74,6 +74,15 @@ public class EventEntity {
     @Builder.Default
     private Set<UserEntity> likedByUsers = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Builder.Default
+    private Set<UserEntity> favoriteByUsers = new HashSet<>();
+
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<EventPictureEntity> pictures = new HashSet<>();
