@@ -9,13 +9,19 @@ import com.eng.software.mova.infrastructure.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class CommentConverter {
 
     public static Comment entityToDomain(CommentEntity entity) {
         if (entity == null) return null;
+
+        Set<UUID> likedByUserIds = entity.getLikedByUsers() != null
+                ? entity.getLikedByUsers().stream().map(UserEntity::getId).collect(Collectors.toSet())
+                : new java.util.HashSet<>();
 
         return Comment.builder()
                 .id(entity.getId())
@@ -24,6 +30,7 @@ public class CommentConverter {
                 .updatedAt(entity.getUpdatedAt())
                 .userId(entity.getUser() != null ? entity.getUser().getId() : null)
                 .eventId(entity.getEvent() != null ? entity.getEvent().getId() : null)
+                .likedByUsers(likedByUserIds)
                 .build();
     }
 
@@ -41,6 +48,15 @@ public class CommentConverter {
 
         if (domain.getEventId() != null) {
             entity.setEvent(EventEntity.builder().id(domain.getEventId()).build());
+        }
+
+        if (domain.getLikedByUsers() != null && !domain.getLikedByUsers().isEmpty()) {
+            Set<UserEntity> likedByUsers = domain.getLikedByUsers().stream()
+                    .map(userId -> UserEntity.builder().id(userId).build())
+                    .collect(Collectors.toSet());
+            entity.setLikedByUsers(likedByUsers);
+        } else {
+            entity.setLikedByUsers(new java.util.HashSet<>());
         }
 
         return entity;

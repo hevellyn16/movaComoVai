@@ -4,6 +4,7 @@ import com.eng.software.mova.application.dto.comment.CommentCreateDTO;
 import com.eng.software.mova.application.dto.comment.CommentResponseDTO;
 import com.eng.software.mova.domain.model.Comment;
 import com.eng.software.mova.domain.port.CommentRepositoryPort;
+import com.eng.software.mova.domain.port.UserRepositoryPort;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.CommentConverter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepositoryPort commentRepositoryPort;
+    private final UserRepositoryPort userRepositoryPort;
 
     @Transactional(readOnly = true)
     public CommentResponseDTO findById(UUID id) {
@@ -55,5 +57,27 @@ public class CommentService {
 
     public void delete(UUID commentId) {
         commentRepositoryPort.delete(commentId);
+    }
+
+    @Transactional
+    public void likeComment(UUID commentId, UUID userId) {
+        Comment comment = commentRepositoryPort.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id " + commentId));
+        userRepositoryPort.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
+        comment.getLikedByUsers().add(userId);
+        commentRepositoryPort.save(comment);
+    }
+
+    @Transactional
+    public void unlikeComment(UUID commentId, UUID userId) {
+        Comment comment = commentRepositoryPort.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id " + commentId));
+        userRepositoryPort.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
+        comment.getLikedByUsers().remove(userId);
+        commentRepositoryPort.save(comment);
     }
 }

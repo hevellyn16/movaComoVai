@@ -50,6 +50,12 @@ public class CommentController {
         return ResponseEntity.created(location).body(comment);
     }
 
+    @PostMapping("/{commentId}/likes")
+    public ResponseEntity<Void> likeComment(@PathVariable UUID commentId, @AuthenticationPrincipal CustomUserDetails user) {
+        commentService.likeComment(commentId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentResponseDTO> update(@PathVariable UUID commentId,
                                                      @Valid @RequestBody CommentCreateDTO commentDTO,
@@ -62,5 +68,11 @@ public class CommentController {
     public ResponseEntity<Void> delete(@PathVariable UUID commentId) {
         commentService.delete(commentId);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{commentId}/likes")
+    public ResponseEntity<Void> unlikeComment(@PathVariable UUID commentId, @AuthenticationPrincipal CustomUserDetails user) {
+        commentService.unlikeComment(commentId, user.getId());
+        return ResponseEntity.ok().build();
     }
 }

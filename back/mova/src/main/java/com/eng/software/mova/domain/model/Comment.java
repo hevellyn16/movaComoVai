@@ -3,6 +3,8 @@ package com.eng.software.mova.domain.model;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -20,4 +22,6 @@ public class Comment {
     private LocalDateTime updatedAt;
     private UUID userId;
     private UUID eventId;
+    @Builder.Default
+    private Set<UUID> likedByUsers = new HashSet<>();
 }
