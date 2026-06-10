@@ -33,6 +33,12 @@ spring:
           starttls:
             enable: ${MAIL_SMTP_STARTTLS:true}
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+
 server:
   port: ${PORT:8080}
 
@@ -41,3 +47,6 @@ app:
   jwtExpirationInMs: ${JWT_EXPIRATION:86400000}
   jwtResetExpirationInMs: ${JWT_RESET_EXPIRATION:900000}
   passwordResetBaseUrl: ${PASSWORD_RESET_BASE_URL:http://localhost:3000}
+  avatar:
+    upload-dir: ${AVATAR_UPLOAD_DIR:uploads/avatars}
+    base-url: ${AVATAR_BASE_URL:http://localhost:8080/uploads/avatars}

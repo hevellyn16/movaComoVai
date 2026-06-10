@@ -242,3 +242,84 @@ Authorization: {{authToken}}
 ### Remover imagem do evento - ADMIN
 DELETE {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/pictures/6a0de349-9564-4c04-84ec-47dd226b8124
 Authorization: {{authToken}}
+
+### 1. Adicionar item na programação (Line-up) - ADMIN
+POST {{baseUrl}}/events/{{eventIdForSchedules}}/schedules
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Abertura com Cortejo",
+  "description": "Cortejo cultural abrindo o Festival Sertão Vivo.",
+  "scheduleTime": "2026-06-15T18:00:00"
+}
+
+### 2. Atualizar item da programação - ADMIN
+PUT {{baseUrl}}/events/{{eventIdForSchedules}}/schedules/{{scheduleId}}
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Abertura Oficial (Atrasada)",
+  "scheduleTime": "2026-06-15T18:30:00"
+}
+
+### 3. Remover item da programação - ADMIN
+DELETE {{baseUrl}}/events/{{eventIdForSchedules}}/schedules/{{scheduleId}}
+Authorization: {{authToken}}
+
+
+### =========================================
+### INGRESSOS E CHECKOUT (TICKETS)
+### =========================================
+
+@eventIdToBuy = cole-o-id-do-evento-aqui
+@ticketId = cole-o-id-do-ingresso-gerado-aqui
+
+### 1. Comprar Ingresso (Checkout) - USER/ADMIN
+# paymentMethod pode ser: PIX, CREDIT_CARD, BOLETO
+POST {{baseUrl}}/checkout
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "eventId": "{{eventIdToBuy}}",
+  "paymentMethod": "PIX"
+}
+
+### 2. Listar minha carteira de ingressos - USER/ADMIN
+GET {{baseUrl}}/users/me/tickets?page=0&size=10
+Authorization: {{authToken}}
+
+### 3. Consultar ingresso específico (Para ver o QR Code) - USER/ADMIN
+GET {{baseUrl}}/tickets/{{ticketId}}
+Authorization: {{authToken}}
+
+### 4. Atualizar Status do Pagamento (Ex: Webhook do banco avisou que pagou) - ADMIN
+# status pode ser: PAID, CANCELLED, PENDING
+PATCH {{baseUrl}}/tickets/{{ticketId}}/status
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "status": "PAID"
+}
+
+### 5. Validar Entrada no Evento (Bipar QR Code na portaria) - ADMIN
+POST {{baseUrl}}/tickets/{{ticketId}}/validate
+Authorization: {{authToken}}
+
+### 1. Buscar Perfil Público - PÚBLICO
+GET {{baseUrl}}/users/profile/pablo
+
+### 2. Adicionar Avatar (Versão String Inicial) - USER/ADMIN
+POST {{baseUrl}}/users/me/avatar
+Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="avatar.jpeg"
+Content-Type: image/jpeg
+
+< C:\Users\pablo\Downloads\WhatsApp Image 2026-05-06 at 13.54.44.jpeg
+--WebAppBoundary--
