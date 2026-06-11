@@ -54,4 +54,8 @@ public class CommentEntity {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<CommentPictureEntity> pictures = new HashSet<>();
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<AnswerEntity> answers = new HashSet<>();
 }
