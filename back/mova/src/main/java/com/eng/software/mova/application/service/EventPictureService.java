@@ -10,6 +10,8 @@ import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.EventPictureConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,12 +35,10 @@ public class EventPictureService {
         return EventPictureConverter.domainToResponse(eventPicture);
     }
 
-    public Set<EventPictureResponseDTO> findByEventId(UUID eventId) {
-        Set<EventPicture> eventPictures = eventPictureRepositoryPort.findByEventId(eventId);
+    public Page<EventPictureResponseDTO> findByEventId(UUID eventId, Pageable pageable) {
+        Page<EventPicture> eventPictures = eventPictureRepositoryPort.findByEventId(eventId, pageable);
 
-        return eventPictures.stream()
-                .map(EventPictureConverter::domainToResponse)
-                .collect(Collectors.toSet());
+        return eventPictures.map(EventPictureConverter::domainToResponse);
     }
 
 

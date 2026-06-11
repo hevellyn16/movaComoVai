@@ -6,6 +6,8 @@ import com.eng.software.mova.domain.port.FileStoragePort;
 import com.eng.software.mova.infrastructure.persistence.entity.EventPictureEntity;
 import com.eng.software.mova.shared.utils.EventPictureConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -26,10 +28,9 @@ public class EventPictureRepository implements EventPictureRepositoryPort {
     }
 
     @Override
-    public Set<EventPicture> findByEventId(UUID eventId) {
-        return eventPictureRepository.findByEventId(eventId).stream()
-                .map(EventPictureConverter::entityToDomain)
-                .collect(Collectors.toSet());
+    public Page<EventPicture> findByEventId(UUID eventId, Pageable pageable) {
+        return eventPictureRepository.findByEventId(eventId, pageable)
+                .map(EventPictureConverter::entityToDomain);
     }
 
     @Override

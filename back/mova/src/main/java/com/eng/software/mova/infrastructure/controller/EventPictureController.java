@@ -3,7 +3,9 @@ package com.eng.software.mova.infrastructure.controller;
 import com.eng.software.mova.application.dto.picture.EventPictureResponseDTO;
 import com.eng.software.mova.application.service.EventPictureService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -26,8 +27,9 @@ public class EventPictureController {
     }
 
     @GetMapping("/events/{eventId}")
-    public ResponseEntity<Set<EventPictureResponseDTO>> findByEventId(@PathVariable UUID eventId) {
-        return ResponseEntity.ok(eventPictureService.findByEventId(eventId));
+    public ResponseEntity<Page<EventPictureResponseDTO>> findByEventId(@PathVariable UUID eventId,
+                                                                       @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(eventPictureService.findByEventId(eventId, pageable));
     }
 
     @PostMapping(value = "/{eventId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

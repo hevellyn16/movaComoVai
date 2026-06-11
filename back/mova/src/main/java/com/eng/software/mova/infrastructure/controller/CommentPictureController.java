@@ -3,6 +3,9 @@ package com.eng.software.mova.infrastructure.controller;
 import com.eng.software.mova.application.dto.picture.CommentPictureResponseDTO;
 import com.eng.software.mova.application.service.CommentPictureService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -25,8 +27,9 @@ public class CommentPictureController {
     }
 
     @GetMapping
-    public ResponseEntity<Set<CommentPictureResponseDTO>> findByCommentId(@PathVariable UUID commentId) {
-        return ResponseEntity.ok(commentPictureService.findByCommentId(commentId));
+    public ResponseEntity<Page<CommentPictureResponseDTO>> findByCommentId(@PathVariable UUID commentId,
+                                                                           @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(commentPictureService.findByCommentId(commentId, pageable));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

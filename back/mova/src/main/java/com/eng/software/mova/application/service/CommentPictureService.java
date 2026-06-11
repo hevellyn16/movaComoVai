@@ -9,6 +9,8 @@ import com.eng.software.mova.domain.port.FileStoragePort;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.CommentPictureConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,11 +38,9 @@ public class CommentPictureService {
         return CommentPictureConverter.domainToResponse(commentPicture);
     }
 
-    public Set<CommentPictureResponseDTO> findByCommentId(UUID commentId) {
-        Set<CommentPicture> commentPictures = commentPictureRepositoryPort.findByCommentId(commentId);
-        return commentPictures.stream()
-                .map(CommentPictureConverter::domainToResponse)
-                .collect(Collectors.toSet());
+    public Page<CommentPictureResponseDTO> findByCommentId(UUID commentId, Pageable pageable) {
+        Page<CommentPicture> commentPictures = commentPictureRepositoryPort.findByCommentId(commentId, pageable);
+        return commentPictures.map(CommentPictureConverter::domainToResponse);
     }
 
     @Transactional

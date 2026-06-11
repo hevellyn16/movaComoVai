@@ -8,6 +8,8 @@ import com.eng.software.mova.shared.exceptions.FileManipulationException;
 import com.eng.software.mova.shared.utils.CommentPictureConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,10 +35,9 @@ public class CommentPictureRepository implements CommentPictureRepositoryPort {
     }
 
     @Override
-    public Set<CommentPicture> findByCommentId(UUID commentId) {
-        return commentPictureJpaRepository.findByCommentId(commentId).stream()
-                .map(CommentPictureConverter::entityToDomain)
-                .collect(Collectors.toSet());
+    public Page<CommentPicture> findByCommentId(UUID commentId, Pageable pageable) {
+        return commentPictureJpaRepository.findByCommentId(commentId, pageable)
+                .map(CommentPictureConverter::entityToDomain);
     }
 
     @Override
