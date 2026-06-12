@@ -76,6 +76,8 @@ public class CommentConverter {
     }
 
     public static Comment createDTOToDomain(CommentCreateDTO createDTO, UUID userId, UUID eventId) {
+        if (createDTO  == null) return null;
+
         return Comment.builder()
                 .content(createDTO.content())
                 .createdAt(LocalDateTime.now())
@@ -84,6 +86,9 @@ public class CommentConverter {
                 .build();
     }
     public static void updateComment(Comment comment, CommentCreateDTO createDTO) {
+        if (comment == null) return;
+        if (createDTO == null) return;
+
         comment.setContent(createDTO.content());
         comment.setUpdatedAt(LocalDateTime.now());
     }
