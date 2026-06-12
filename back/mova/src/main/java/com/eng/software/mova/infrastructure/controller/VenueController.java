@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,15 +38,12 @@ public class VenueController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<VenueResponseDTO>> search(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String neighborhood,
-            Pageable pageable) {
+    public ResponseEntity<Page<VenueResponseDTO>> searchVenues(
+            @RequestParam(required = false) String q,
+            @PageableDefault Pageable pageable) {
 
-        Page<VenueResponseDTO> venues = service.search(name, city, neighborhood, pageable)
-                .map(VenueConverter::domainToResponse);
-        return ResponseEntity.ok(venues);
+        Page<Venue> venues = service.search(q, pageable);
+        return ResponseEntity.ok(venues.map(VenueConverter::domainToResponse));
     }
 
     @PostMapping

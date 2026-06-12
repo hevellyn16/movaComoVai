@@ -4,12 +4,13 @@ import com.eng.software.mova.infrastructure.persistence.entity.VenueEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.UUID;
 
-public interface VenueJpaRepository extends JpaRepository<VenueEntity, UUID> {
+public interface VenueJpaRepository extends JpaRepository<VenueEntity, UUID>, JpaSpecificationExecutor<VenueEntity> {
 
     @Query("SELECT v FROM VenueEntity v WHERE " +
             "(:name IS NULL OR LOWER(v.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +

@@ -44,8 +44,8 @@ public class VenueService {
                 .orElseThrow(() -> new ResourceNotFoundException("Venue not found with id: " + id));
     }
 
-    public Page<Venue> search(String name, String city, String neighborhood, Pageable pageable) {
-        return repository.search(name, city, neighborhood, pageable);
+    public Page<Venue> search(String q, Pageable pageable) {
+        return repository.search(q, pageable);
     }
 
     @Transactional

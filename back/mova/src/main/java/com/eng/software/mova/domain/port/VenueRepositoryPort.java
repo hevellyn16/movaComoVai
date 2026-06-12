@@ -14,6 +14,6 @@ public interface VenueRepositoryPort {
     Venue save(Venue venue);
     Optional<Venue> findById(UUID id);
     Page<Venue> findAll(Pageable pageable);
-    Page<Venue> search(String name, String city, String neighborhood, Pageable pageable);
+    Page<Venue> search(String q, Pageable pageable);
     void deleteById(UUID id);
 }
