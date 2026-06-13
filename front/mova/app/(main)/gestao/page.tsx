@@ -39,7 +39,7 @@ interface Event {
 export default function GestaoEventosPage() {
   const [events, setEvents] = useState<Event[]>([
     {
-      id: "6f5b3310-410c-4033-87bb-e8e3c15d71c4",
+      id: "id-teste-01",
       eventName: "Festival de Jazz de Sobral",
       description: "O melhor do jazz instrumental na região Norte.",
       contentRating: "Livre",
@@ -53,7 +53,7 @@ export default function GestaoEventosPage() {
       pictures: [{ id: "p1", url: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=150" }]
     },
     {
-      id: "7a2c1409-5a12-4211-9ffc-1234a56b78c9",
+      id: "id-teste-02",
       eventName: "Exposição Cores do Sertão",
       description: "Mostra de artes plásticas regionais.",
       contentRating: "Livre",
@@ -67,7 +67,7 @@ export default function GestaoEventosPage() {
       pictures: [{ id: "p2", url: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150" }]
     },
     {
-      id: "8f1409ab-2b3c-4d5e-8f9a-bcde12345678",
+      id: "id-teste-03",
       eventName: "Peça: O Auto da Compadecida",
       description: "Clássico de Ariano Suassuna.",
       contentRating: "12+",
@@ -81,22 +81,8 @@ export default function GestaoEventosPage() {
       pictures: [{ id: "p3", url: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=150" }]
     },
     {
-      id: "id-teste-01",
-      eventName: "Evento 123",
-      description: "Mostra de artes plásticas regionais.",
-      contentRating: "Livre",
-      price: 15.00,
-      startsAt: "2024-09-02T09:00:00",
-      endsAt: "2024-09-30T18:00:00",
-      createdAt: "2024-02-15T14:30:00",
-      updatedAt: "2024-02-15T14:30:00",
-      venue: { id: "2", name: "Casa da Cultura", city: "Sobral" },
-      tags: [{ id: "2", name: "Artes Visuais" }],
-      pictures: [{ id: "p2", url: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150" }]
-    },
-    {
-      id: "id-teste-02", // ID corrigido para não repetir
-      eventName: "Outro Evento",
+      id: "id-teste-04",
+      eventName: "Show de Forró Pé de Serra",
       description: "Mostra de artes plásticas regionais.",
       contentRating: "Livre",
       price: 15.00,
@@ -106,6 +92,20 @@ export default function GestaoEventosPage() {
       updatedAt: "2024-02-15T14:30:00",
       venue: { id: "2", name: "Casa da Cultura", city: "Sobral" },
       tags: [{ id: "2", name: "Música" }],
+      pictures: [{ id: "p2", url: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150" }]
+    },
+    {
+      id: "id-teste-05",
+      eventName: "Baião de 2: Evento Gastronomia Regional",
+      description: "Mostra de artes plásticas regionais.",
+      contentRating: "Livre",
+      price: 15.00,
+      startsAt: "2024-09-02T09:00:00",
+      endsAt: "2024-09-30T18:00:00",
+      createdAt: "2024-02-15T14:30:00",
+      updatedAt: "2024-02-15T14:30:00",
+      venue: { id: "2", name: "Casa da Cultura", city: "Sobral" },
+      tags: [{ id: "2", name: "Gastronomia" }],
       pictures: [{ id: "p2", url: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150" }]
     },
   ]);
@@ -177,14 +177,15 @@ export default function GestaoEventosPage() {
           {/* BARRA DE FERRAMENTAS: BUSCA E FILTROS */}
           <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 justify-between items-center bg-white">
             <div className="relative w-full sm:max-w-xs">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined" style={{ fontSize: 18 }}>search</span>
+
               <input 
                 type="text" 
                 placeholder="Buscar por nome do evento..."
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setCurrentPage(1); // Volta pra primeira página ao buscar
+                  setCurrentPage(1);
                 }}
                 className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-mova-red transition-colors placeholder:text-gray-400"
               />
@@ -256,9 +257,9 @@ export default function GestaoEventosPage() {
               <thead>
                 <tr className="bg-gray-50/70 border-b border-gray-100">
                   <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider w-[40%]">Evento</th>
-                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider">Data</th>
-                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider">Preço</th>
-                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-right">Ações</th>
+                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-center">Data</th>
+                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-center">Preço</th>
+                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-center">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -286,11 +287,13 @@ export default function GestaoEventosPage() {
                       </div>
                     </td>
 
-                    <td className="p-4 text-sm text-gray-600 font-medium">
+                    {/* Mudamos para text-center para casar com o Cabeçalho */}
+                    <td className="p-4 text-sm text-gray-600 font-medium text-center">
                       {formatDate(event.startsAt)}
                     </td>
 
-                    <td className="p-4 text-sm">
+                    {/* Mudamos para text-center para casar com o Cabeçalho */}
+                    <td className="p-4 text-sm text-center">
                       {event.price === 0 ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-green-50 text-green-700 border border-green-200/50">
                           Gratuito
@@ -302,16 +305,22 @@ export default function GestaoEventosPage() {
                       )}
                     </td>
 
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
+                    {/* Alinhamento perfeito: o '-mr-1.5' neutraliza o preenchimento invisível dos botões redondos */}
+                    <td className="p-4 text-center">
+                      <div className="flex items-center justify-center gap-1.5 -mr-1.5">
+                        {/* Visualizar */}
                         <button className="p-1.5 text-gray-400 hover:text-mova-dark hover:bg-gray-100 rounded-lg transition-all cursor-pointer" title="Visualizar">
-                          Ver
+                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>visibility</span>
                         </button>
+
+                        {/* Editar */}
                         <button className="p-1.5 text-gray-400 hover:text-mova-yellow-dark hover:bg-mova-yellow/10 rounded-lg transition-all cursor-pointer" title="Editar">
-                          Editar
+                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
                         </button>
+
+                        {/* Excluir */}
                         <button className="p-1.5 text-gray-400 hover:text-mova-red hover:bg-mova-red/10 rounded-lg transition-all cursor-pointer" title="Excluir">
-                          Excluir
+                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
                         </button>
                       </div>
                     </td>
