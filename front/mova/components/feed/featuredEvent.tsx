@@ -25,7 +25,7 @@ export default function FeaturedEvent({ event }: { event: Event }) {
 					className="absolute inset-0 w-full h-full object-cover"
 				/>
 			)}
-			<div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+			<div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent z-10" />
 
 			{/* Tags */}
 			<div className="absolute top-3 left-3 z-20 flex gap-2">

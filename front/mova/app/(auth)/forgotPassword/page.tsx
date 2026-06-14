@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const ForgotPasswordSuccessPage = () => {
+export default function ForgotPasswordSuccessPage(){
   return (
     <div className="flex min-h-screen font-sans">
       
@@ -38,7 +38,7 @@ export const ForgotPasswordSuccessPage = () => {
           </p>
 
           <Link 
-            href="/auth/login"
+            href="/login"
             className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-[#b91c1c] hover:bg-[#991b1b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b91c1c] transition-colors"
           >
             Voltar para o Login
@@ -56,5 +56,3 @@ export const ForgotPasswordSuccessPage = () => {
     </div>
   );
 };
-
-export default ForgotPasswordSuccessPage;

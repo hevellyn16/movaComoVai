@@ -135,7 +135,7 @@ export default function AjudaPage() {
               </div>
             </section>
 
-            <section className="overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-r from-mova-red via-mova-yellow to-[#1F4E92] p-6 text-white shadow-sm">
+            <section className="overflow-hidden rounded-3xl border border-gray-200 bg-linear-to-r from-mova-red via-mova-yellow to-[#1F4E92] p-6 text-white shadow-sm">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm uppercase tracking-[0.2em] text-white/80">Sobral é cultura.</p>
