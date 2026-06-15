@@ -58,3 +58,6 @@ springdoc:
     path: /mova/swagger-ui.html
     operations-sorter: method
     tags-sorter: alpha
+
+file:
+  upload-dir: ${FILE_UPLOAD_DIR:./uploads}

@@ -215,6 +215,31 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{eventId}/likes")
+    public ResponseEntity<Void> likeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.likeEvent(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{eventId}/favorites")
+    public ResponseEntity<Void> addFavorite(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.addFavorite(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{eventId}/favorites")
+    public ResponseEntity<Void> removeFavorite(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.removeFavorite(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{eventId}/likes")
+    public ResponseEntity<Void> unlikeEvent(@PathVariable UUID eventId, @AuthenticationPrincipal CustomUserDetails user) {
+        service.unlikeEvent(eventId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+
     // ======================== TAGS DO EVENTO (ADMIN) ========================
 
     @Operation(

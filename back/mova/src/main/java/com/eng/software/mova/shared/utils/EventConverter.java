@@ -7,9 +7,10 @@ import com.eng.software.mova.domain.model.EventPicture;
 import com.eng.software.mova.domain.model.EventSchedule;
 import com.eng.software.mova.domain.model.Tag;
 import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
+import org.springframework.stereotype.Component;
 import com.eng.software.mova.infrastructure.persistence.entity.EventPictureEntity;
 import com.eng.software.mova.infrastructure.persistence.entity.EventScheduleEntity;
-import org.springframework.stereotype.Component;
+import com.eng.software.mova.infrastructure.persistence.entity.UserEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,10 @@ public class EventConverter {
                 .updatedAt(entity.getUpdatedAt())
                 .tags(entity.getTags() != null ? entity.getTags().stream()
                         .map(TagConverter::entityToDomain).collect(Collectors.toSet()) : null)
+                .likedByUsers(entity.getLikedByUsers() != null ? entity.getLikedByUsers().stream()
+                        .map(UserEntity::getId).collect(Collectors.toSet()) : null)
+                .favoriteByUsers(entity.getFavoriteByUsers() != null ? entity.getFavoriteByUsers().stream()
+                        .map(UserEntity::getId).collect(Collectors.toSet()) : null)
                 .pictures(entity.getPictures() != null ? entity.getPictures().stream()
                         .map(picEntity -> EventPicture.builder()
                                 .id(picEntity.getId())
@@ -68,6 +73,10 @@ public class EventConverter {
                 .updatedAt(domain.getUpdatedAt())
                 .tags(domain.getTags() != null ? domain.getTags().stream()
                         .map(TagConverter::domainToEntity).collect(Collectors.toSet()) : null)
+                .likedByUsers(domain.getLikedByUsers() != null ? domain.getLikedByUsers().stream()
+                        .map(id -> UserEntity.builder().id(id).build()).collect(Collectors.toSet()) : null)
+                .favoriteByUsers(domain.getFavoriteByUsers() != null ? domain.getFavoriteByUsers().stream()
+                        .map(id -> UserEntity.builder().id(id).build()).collect(Collectors.toSet()) : null)
                 .build();
 
         if (domain.getPictures() != null) {
@@ -120,7 +129,8 @@ public class EventConverter {
                 domain.getVenue() != null ? domain.getVenue().getName() : null,
                 domain.getTags() != null ? domain.getTags().stream()
                         .map(Tag::getTagName).collect(Collectors.toSet()) : null,
-                schedules
+                schedules,
+                domain.getLikedByUsers() != null ? domain.getLikedByUsers() : null
         );
     }
 }

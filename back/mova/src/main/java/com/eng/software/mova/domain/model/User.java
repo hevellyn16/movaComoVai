@@ -31,4 +31,6 @@ public class User {
     private boolean pushNotifications;
     private boolean emailNotifications;
     private Set<UUID> tagsId;
+    private Set<UUID> likedEvents;
+    private Set<UUID> favoriteEvents;
 }

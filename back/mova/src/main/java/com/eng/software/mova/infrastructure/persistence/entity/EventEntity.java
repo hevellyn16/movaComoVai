@@ -62,7 +62,17 @@ public class EventEntity {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<TagEntity> tags;
+    @Builder.Default
+    private Set<TagEntity> tags = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_likes",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Builder.Default
+    private Set<UserEntity> likedByUsers = new HashSet<>();
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -73,6 +83,15 @@ public class EventEntity {
     @Builder.Default
     @EqualsAndHashCode.Exclude
     private Set<EventScheduleEntity> schedules = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Builder.Default
+    private Set<UserEntity> favoriteByUsers = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

@@ -5,18 +5,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
-public interface EventJpaRepository extends JpaRepository<EventEntity, UUID> {
+public interface EventJpaRepository extends JpaRepository<EventEntity, UUID>, JpaSpecificationExecutor<EventEntity> {
 
     Page<EventEntity> findByStartsAtBetween(LocalDateTime startOfDay, LocalDateTime endOfDay, Pageable pageable);
 
     Page<EventEntity> findByStartsAtGreaterThanEqual(LocalDateTime now, Pageable pageable);
+
+    List<EventEntity> findByStartsAtGreaterThanEqual(LocalDateTime now);
 
     @Query("SELECT e FROM EventEntity e LEFT JOIN e.venue v WHERE " +
             "(:q IS NULL OR LOWER(e.eventName) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(e.description) LIKE LOWER(CONCAT('%', :q, '%'))) AND " +

@@ -13,5 +13,6 @@ import java.util.UUID;
 public class EventPicture {
     @EqualsAndHashCode.Include
     private UUID id;
+    private UUID eventId;
     private String pictureUrl;
 }

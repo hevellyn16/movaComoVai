@@ -29,4 +29,6 @@ public class Event {
     private Set<Tag> tags;
     private Set<EventPicture> pictures;
     private Set<EventSchedule> schedules;
+    private Set<UUID> likedByUsers;
+    private Set<UUID> favoriteByUsers;
 }

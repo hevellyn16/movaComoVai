@@ -44,6 +44,8 @@ public record EventResponseDTO(
         Set<String> tags,
 
         @Schema(description = "Itens da programação do evento")
-        List<EventScheduleResponseDTO> schedules
+        List<EventScheduleResponseDTO> schedules,
+
+        Set<UUID> likedByUserIds
 ) {
 }

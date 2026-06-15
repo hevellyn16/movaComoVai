@@ -82,4 +82,12 @@ public class UserEntity {
     )
     @Builder.Default
     private Set<TagEntity> tags = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likedByUsers")
+    @Builder.Default
+    private Set<EventEntity> likedEvents = new HashSet<>();
+
+    @ManyToMany(mappedBy = "favoriteByUsers")
+    @Builder.Default
+    private Set<EventEntity> favoriteEvents = new HashSet<>();
 }
