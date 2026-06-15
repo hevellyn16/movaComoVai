@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Event } from "@/types/event.types";
 
 export default function FeaturedEvent({ event }: { event: Event }) {
@@ -18,6 +19,13 @@ export default function FeaturedEvent({ event }: { event: Event }) {
 
 	return (
 		<div className="relative w-full rounded-2xl overflow-hidden h-64 bg-mova-dark">
+			<Link
+				href={`/events/${event.id}`}
+				className="absolute inset-0 z-10"
+				aria-label={`Ver detalhes do evento ${event.eventName}`}
+			>
+				<span className="sr-only">Ver detalhes do evento {event.eventName}</span>
+			</Link>
 			{image && (
 				<img
 					src={image}
@@ -25,7 +33,7 @@ export default function FeaturedEvent({ event }: { event: Event }) {
 					className="absolute inset-0 w-full h-full object-cover"
 				/>
 			)}
-			<div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+			<div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-20 pointer-events-none" />
 
 			{/* Tags */}
 			<div className="absolute top-3 left-3 z-20 flex gap-2">
@@ -37,7 +45,7 @@ export default function FeaturedEvent({ event }: { event: Event }) {
 			</div>
 
 			{/* Favoritar */}
-			<button className="absolute top-3 right-3 z-20 bg-white/20 backdrop-blur-sm rounded-full p-1.5">
+			<button type="button" className="absolute top-3 right-3 z-20 bg-white/20 backdrop-blur-sm rounded-full p-1.5">
 				<span
 					className="material-symbols-outlined text-white"
 					style={{ fontSize: 20 }}
