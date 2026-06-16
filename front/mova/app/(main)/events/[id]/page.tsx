@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { featuredEvent, nextEvents } from "@/mocks/feed.mocks";
+import { feedEvents} from "@/mocks/feed.mocks";
 
-const allEvents = [featuredEvent, ...nextEvents];
+const allEvents = feedEvents;
 
 function formatDate(dateString: string) {
 	return new Date(dateString).toLocaleDateString("pt-BR", {
