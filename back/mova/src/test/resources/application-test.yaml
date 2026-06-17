@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: mova
+
+  datasource:
+    # O @ServiceConnection sobrescreve isso, mas deixamos valores explícitos de teste
+    # caso você rode algum teste fatiado (@DataJpaTest) sem subir o container.
+    url: jdbc:postgresql://localhost:5432/test_db
+    username: test_user
+    password: test_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    show-sql: true # Útil para debugar queries nos testes
+    hibernate:
+      ddl-auto: none # O Flyway assume a criação das tabelas
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true # Deixa o log do show-sql mais legível
+
+  mail:
+    # Configurações dummy para isolar os testes da internet
+    host: localhost
+    port: 1025
+    username: test_user
+    password: test_password
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+server:
+  port: 8081 # Rodar em uma porta diferente da 8080 evita conflitos se a app já estiver rodando localmente
+
+app:
+  base-url: http://localhost:${server.port}
+  jwtSecret: ChaveSecretaDeTesteQueDeveTerPeloMenosTrintaEDoisCaracteres
+  jwtExpirationInMs: 86400000
+  jwtResetExpirationInMs: 900000
+  passwordResetBaseUrl: http://localhost:3000
+  avatar:
+    upload-dir: uploads/avatars_test
+    base-url: http://localhost:${server.port}/uploads/avatars_test
+
+file:
+  upload-dir: ./uploads_test # Evita poluir a pasta de uploads da sua máquina durante os testes
