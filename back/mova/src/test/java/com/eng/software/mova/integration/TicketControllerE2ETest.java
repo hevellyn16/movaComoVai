@@ -251,7 +251,7 @@ class TicketControllerE2ETest {
             mockMvc.perform(post("/tickets/{id}/validate", ticket.getId())
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.status").value("USED"));
+                    .andExpect(jsonPath("$.status").value("PAID"));
 
             TicketEntity updated = ticketJpaRepository.findById(ticket.getId()).orElseThrow();
             assertThat(updated.getStatus()).isEqualTo(TicketStatus.PAID);

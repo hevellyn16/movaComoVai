@@ -210,7 +210,11 @@ class VenueControllerE2ETest {
                     "number": "S/N",
                     "city": "São Paulo",
                     "street": "Av. Pedro Álvares Cabral",
-                    "neighborhood": "Vila Mariana"
+                    "neighborhood": "Vila Mariana",
+                    "hasParkingLot": false,
+                    "hasAccessibility": true,
+                    "hasBathroom": true,
+                    "hasFoodsAndDrinks": false
                 }
                 """;
 

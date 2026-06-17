@@ -96,13 +96,16 @@ public class UserService {
         User existing = userRepositoryPort.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
+        String originalEmail = existing.getEmail();
+        String originalUsername = existing.getUsername();
+
         User updated = UserConverter.updateUserFromDTO(existing, dto);
 
-        if (!existing.getEmail().equals(updated.getEmail()) && userRepositoryPort.existsByEmail(updated.getEmail())) {
+        if (updated.getEmail() != null && !originalEmail.equals(updated.getEmail()) && userRepositoryPort.existsByEmail(updated.getEmail())) {
             throw new ResourceAlreadyExistsException("User already exists with email: " + updated.getEmail());
         }
 
-        if (updated.getUsername() != null && !updated.getUsername().equals(existing.getUsername())) {
+        if (updated.getUsername() != null && !originalUsername.equals(updated.getUsername())) {
             if (userRepositoryPort.existsByUsername(updated.getUsername())) {
                 throw new ResourceAlreadyExistsException("Username already taken: " + updated.getUsername());
             }

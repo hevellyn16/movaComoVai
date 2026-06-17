@@ -262,10 +262,32 @@ public class CommentServiceTest {
     public void shouldDeleteComment_whenDeleteIsCalled() {
         UUID commentId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        Comment comment = Comment.builder().id(commentId).userId(userId).build();
+
+        when(commentRepositoryPort.findById(commentId)).thenReturn(Optional.of(comment));
 
         commentService.delete(commentId, userId);
 
+        verify(commentRepositoryPort, times(1)).findById(commentId);
         verify(commentRepositoryPort, times(1)).delete(commentId);
+        verifyNoMoreInteractions(commentRepositoryPort, userRepositoryPort);
+    }
+
+    @Test
+    public void shouldThrowWhenUserDoesNotMatch_onDelete() {
+        UUID commentId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+        UUID otherUserId = UUID.randomUUID();
+        Comment comment = Comment.builder().id(commentId).userId(ownerId).build();
+
+        when(commentRepositoryPort.findById(commentId)).thenReturn(Optional.of(comment));
+
+        assertThatThrownBy(() -> commentService.delete(commentId, otherUserId))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Comment not found for this user!");
+
+        verify(commentRepositoryPort, times(1)).findById(commentId);
+        verify(commentRepositoryPort, never()).delete(any());
         verifyNoMoreInteractions(commentRepositoryPort, userRepositoryPort);
     }
 
