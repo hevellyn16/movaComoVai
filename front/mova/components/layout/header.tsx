@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Header() {
 	return (
 		<header className="w-full bg-white shadow-sm px-6 py-3 flex items-center justify-between gap-4">
@@ -22,22 +24,14 @@ export default function Header() {
 			</div>
 
 			<div className="flex items-center gap-4">
-				<button className="cursor-pointer">
-					<span
-						className="material-symbols-outlined text-mova-dark hover:text-mova-red transition-colors cursor-pointer"
-						style={{ fontSize: 24 }}
-					>
-						notifications
-					</span>
-				</button>
-				<button className="cursor-pointer">
+				<Link href="/configuracoes">
 					<span
 						className="material-symbols-outlined text-mova-dark hover:text-mova-red transition-colors cursor-pointer"
 						style={{ fontSize: 24 }}
 					>
 						account_circle
 					</span>
-				</button>
+				</Link>
 			</div>
 		</header>
 	);
