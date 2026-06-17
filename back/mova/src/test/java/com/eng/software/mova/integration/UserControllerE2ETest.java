@@ -39,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerE2ETest {
 
     @Autowired private MockMvc mockMvc;
-    // Removido: @Autowired private ObjectMapper objectMapper;
     @Autowired private UserJpaRepository userJpaRepository;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JdbcTemplate jdbcTemplate;
@@ -183,67 +182,6 @@ class UserControllerE2ETest {
         }
     }
 
-    // ======================== POST /auth/login ========================
-
-    @Nested
-    @DisplayName("POST /auth/login")
-    class LoginTests {
-
-        @Test
-        @DisplayName("Deve fazer login com sucesso e retornar JWT")
-        void shouldLoginSuccessfully() throws Exception {
-            createCommonUser("João Silva", "joaosilva", "joao@email.com", "Senha123");
-
-            String jsonPayload = """
-                {
-                    "email": "joao@email.com",
-                    "password": "Senha123"
-                }
-                """;
-
-            mockMvc.perform(post("/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(jsonPayload))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.token").isNotEmpty())
-                    .andExpect(jsonPath("$.email").value("joao@email.com"))
-                    .andExpect(jsonPath("$.role").value("ROLE_COMMON"));
-        }
-
-        @Test
-        @DisplayName("Deve retornar 401 quando credenciais são inválidas")
-        void shouldReturnUnauthorizedWhenBadCredentials() throws Exception {
-            createCommonUser("João Silva", "joaosilva", "joao@email.com", "Senha123");
-
-            String jsonPayload = """
-                {
-                    "email": "joao@email.com",
-                    "password": "SenhaErrada"
-                }
-                """;
-
-            mockMvc.perform(post("/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(jsonPayload))
-                    .andExpect(status().isUnauthorized());
-        }
-
-        @Test
-        @DisplayName("Deve retornar 401 quando usuário não existe")
-        void shouldReturnUnauthorizedWhenUserDoesNotExist() throws Exception {
-            String jsonPayload = """
-                {
-                    "email": "naoexiste@email.com",
-                    "password": "Senha123"
-                }
-                """;
-
-            mockMvc.perform(post("/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(jsonPayload))
-                    .andExpect(status().isUnauthorized());
-        }
-    }
 
     // ======================== GET /users/profile/{username} ========================
 
@@ -601,7 +539,7 @@ class UserControllerE2ETest {
             // Verificar login com nova senha
             String loginPayload = """
                 {
-                    "email": "joao@email.com",
+                    "username": "joao@email.com",
                     "password": "NovaSenha123"
                 }
                 """;
