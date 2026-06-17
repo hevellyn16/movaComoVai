@@ -45,7 +45,7 @@ export const LoginForm = () => {
             <p className="text-gray-500">Bem-vindo de volta. Acesse sua conta para continuar.</p>
           </div>
 
-          <form action="/auth/login" method="post" className="space-y-5">
+          <form action="/login" method="post" className="space-y-5">
             
             <div className="space-y-1">
               <label htmlFor="email" className="block text-sm font-semibold text-gray-800">E-mail</label>
@@ -69,7 +69,7 @@ export const LoginForm = () => {
             <div className="space-y-1">
               <div className="flex justify-between items-center">
                 <label htmlFor="password" className="block text-sm font-semibold text-gray-800">Senha</label>
-                <Link href="/auth/forgotPassword" className="text-sm text-[#0066cc] hover:underline font-medium">
+                <Link href="/forgotPassword" className="text-sm text-[#0066cc] hover:underline font-medium">
                   Esqueci minha senha
                 </Link>
               </div>
@@ -144,7 +144,7 @@ export const LoginForm = () => {
 
           <p className="mt-8 text-center text-sm text-gray-600">
             Não tem uma conta?{' '}
-            <Link href="/auth/register" className="font-bold text-[#b91c1c] hover:underline">
+            <Link href="/register" className="font-bold text-[#b91c1c] hover:underline">
               Cadastre-se
             </Link>
           </p>
@@ -155,7 +155,7 @@ export const LoginForm = () => {
   );
 };
 
-export const AuthLoginPage = () => {
+export default function AuthLoginPage() {
   return (
 //    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
     <LoginForm />

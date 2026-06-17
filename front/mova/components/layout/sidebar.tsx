@@ -56,6 +56,16 @@ export default function Sidebar({ isAdmin = false }: SidebarProps) {
 						</Link>
 					);
 				})}
+
+				{/* Botão Criar Evento (só admin) */}
+				{isAdmin && (
+					<Link
+						href="/createEvent"
+						className="mt-4 w-full py-3 px-4 bg-mova-red text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:bg-mova-red-dark transition-colors"
+					>
+						Criar Evento
+					</Link>
+				)}
 			</nav>
 
 			<nav className="flex flex-col gap-1">

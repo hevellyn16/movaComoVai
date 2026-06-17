@@ -1,3 +1,5 @@
+import { User } from "./user.types";
+
 export interface Event {
   id: string;
   userId: string;
@@ -42,15 +44,6 @@ export interface Venue {
   hasAccessibility: boolean;
   hasBathroom: boolean;
   hasFoodsAndDrinks: boolean;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  userType: "ADMIN" | "COMMON";
-  createdAt: string;
-  updatedAt?: string;
 }
 
 export interface Comment {
