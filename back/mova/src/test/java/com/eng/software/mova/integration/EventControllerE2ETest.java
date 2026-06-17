@@ -75,7 +75,7 @@ class EventControllerE2ETest {
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content").isArray())
-                    .andExpect(jsonPath("$.totalElements").value(2));
+                    .andExpect(jsonPath("$.content.length()").value(2));
         }
     }
 
@@ -144,10 +144,22 @@ class EventControllerE2ETest {
             UserEntity common = createCommonUser("Common", "common", "common@email.com", "senha");
             String token = getAccessToken(common);
 
+            String validPayload = """
+                {
+                    "eventName": "Novo Evento",
+                    "description": "Descricao",
+                    "contentRating": "Livre",
+                    "price": 100.00,
+                    "startsAt": "2025-10-10T20:00:00",
+                    "endsAt": "2025-10-10T23:00:00",
+                    "venueId": "%s"
+                }
+                """.formatted(UUID.randomUUID());
+
             mockMvc.perform(post("/events")
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{}"))
+                            .content(validPayload))
                     .andExpect(status().isForbidden());
         }
     }

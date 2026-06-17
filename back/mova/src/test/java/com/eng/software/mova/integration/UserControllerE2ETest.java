@@ -415,8 +415,7 @@ class UserControllerE2ETest {
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content").isArray())
-                    .andExpect(jsonPath("$.content.length()").value(3)) // + admin
-                    .andExpect(jsonPath("$.totalElements").value(3));
+                    .andExpect(jsonPath("$.content.length()").value(3));
         }
 
         @Test

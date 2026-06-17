@@ -261,8 +261,9 @@ public class CommentServiceTest {
     @Test
     public void shouldDeleteComment_whenDeleteIsCalled() {
         UUID commentId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
 
-        commentService.delete(commentId);
+        commentService.delete(commentId, userId);
 
         verify(commentRepositoryPort, times(1)).delete(commentId);
         verifyNoMoreInteractions(commentRepositoryPort, userRepositoryPort);

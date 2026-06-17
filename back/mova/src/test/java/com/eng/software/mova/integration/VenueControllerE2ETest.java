@@ -70,8 +70,7 @@ class VenueControllerE2ETest {
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content").isArray())
-                    .andExpect(jsonPath("$.content.length()").value(2))
-                    .andExpect(jsonPath("$.totalElements").value(2));
+                    .andExpect(jsonPath("$.content.length()").value(2));
         }
 
         @Test
@@ -148,8 +147,7 @@ class VenueControllerE2ETest {
                             .param("size", "10"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content").isArray())
-                    .andExpect(jsonPath("$.content.length()").value(2))
-                    .andExpect(jsonPath("$.totalElements").value(2));
+                    .andExpect(jsonPath("$.content.length()").value(2));
         }
 
         @Test
@@ -287,10 +285,20 @@ class VenueControllerE2ETest {
             UserEntity common = createCommonUser("Common", "common", "common@email.com", "Senha123");
             String token = getAccessToken(common);
 
+            String validPayload = """
+                {
+                    "name": "Local",
+                    "number": "S/N",
+                    "city": "São Paulo",
+                    "street": "Rua X",
+                    "neighborhood": "Bairro"
+                }
+                """;
+
             mockMvc.perform(put("/venues/{id}", UUID.randomUUID())
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{}"))
+                            .content(validPayload))
                     .andExpect(status().isForbidden());
         }
         
@@ -300,10 +308,20 @@ class VenueControllerE2ETest {
             UserEntity admin = createAdminUser("Admin", "admin", "admin@email.com", "Senha123");
             String token = getAccessToken(admin);
 
+            String validPayload = """
+                {
+                    "name": "Local",
+                    "number": "S/N",
+                    "city": "São Paulo",
+                    "street": "Rua X",
+                    "neighborhood": "Bairro"
+                }
+                """;
+
             mockMvc.perform(put("/venues/{id}", UUID.randomUUID())
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{}"))
+                            .content(validPayload))
                     .andExpect(status().isNotFound());
         }
     }

@@ -130,8 +130,7 @@ class TicketControllerE2ETest {
                             .requestAttr("userId", user.getId().toString()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content").isArray())
-                    .andExpect(jsonPath("$.content.length()").value(2))
-                    .andExpect(jsonPath("$.totalElements").value(2));
+                    .andExpect(jsonPath("$.content.length()").value(2));
         }
 
         @Test

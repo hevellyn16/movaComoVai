@@ -55,7 +55,13 @@ public class CommentService {
         return CommentConverter.domainToResponseDTO(comment);
     }
 
-    public void delete(UUID commentId) {
+    public void delete(UUID commentId, UUID userId) {
+        Comment comment = commentRepositoryPort.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found!"));
+
+        if (comment.getUserId() != null && !comment.getUserId().equals(userId))
+            throw new ResourceNotFoundException("Comment not found for this user!");
+
         commentRepositoryPort.delete(commentId);
     }
 
