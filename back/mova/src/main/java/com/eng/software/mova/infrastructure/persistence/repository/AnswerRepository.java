@@ -1,12 +1,9 @@
 package com.eng.software.mova.infrastructure.persistence.repository;
 
 import com.eng.software.mova.domain.model.Answer;
-import com.eng.software.mova.domain.model.Comment;
 import com.eng.software.mova.domain.port.AnswerRepositoryPort;
 import com.eng.software.mova.infrastructure.persistence.entity.AnswerEntity;
-import com.eng.software.mova.infrastructure.persistence.entity.CommentEntity;
 import com.eng.software.mova.shared.utils.AnswerConverter;
-import com.eng.software.mova.shared.utils.CommentConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

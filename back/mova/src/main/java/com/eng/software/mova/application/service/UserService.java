@@ -12,7 +12,6 @@ import com.eng.software.mova.shared.exceptions.ApiException;
 import com.eng.software.mova.shared.exceptions.ResourceAlreadyExistsException;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.UserConverter;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;

@@ -3,7 +3,6 @@ package com.eng.software.mova.infrastructure.persistence.repository;
 import com.eng.software.mova.domain.model.User;
 import com.eng.software.mova.domain.port.UserRepositoryPort;
 import com.eng.software.mova.infrastructure.persistence.entity.UserEntity;
-import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.UserConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

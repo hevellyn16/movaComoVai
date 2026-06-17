@@ -6,7 +6,6 @@ import com.eng.software.mova.domain.model.EventPicture;
 import com.eng.software.mova.domain.port.EventPictureRepositoryPort;
 import com.eng.software.mova.domain.port.EventRepositoryPort;
 import com.eng.software.mova.domain.port.FileStoragePort;
-import com.eng.software.mova.infrastructure.persistence.entity.EventEntity;
 import com.eng.software.mova.shared.exceptions.ResourceNotFoundException;
 import com.eng.software.mova.shared.utils.EventPictureConverter;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

@@ -1,13 +1,9 @@
 package com.eng.software.mova.infrastructure.persistence.repository;
 
-import com.eng.software.mova.domain.model.User;
 import com.eng.software.mova.domain.model.Venue;
-import com.eng.software.mova.domain.port.UserRepositoryPort;
 import com.eng.software.mova.domain.port.VenueRepositoryPort;
 import com.eng.software.mova.infrastructure.adapter.specification.VenueSpecification;
-import com.eng.software.mova.infrastructure.persistence.entity.UserEntity;
 import com.eng.software.mova.infrastructure.persistence.entity.VenueEntity;
-import com.eng.software.mova.shared.utils.UserConverter;
 import com.eng.software.mova.shared.utils.VenueConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

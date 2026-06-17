@@ -2,7 +2,6 @@ package com.eng.software.mova.infrastructure.controller;
 
 import com.eng.software.mova.application.dto.auth.JwtResponse;
 import com.eng.software.mova.application.dto.auth.LoginRequest;
-import com.eng.software.mova.application.dto.auth.PasswordRequestDTO;
 import com.eng.software.mova.infrastructure.security.Auth0JwtTokenProvider;
 import com.eng.software.mova.infrastructure.security.CustomUserDetails;
 import jakarta.validation.Valid;
