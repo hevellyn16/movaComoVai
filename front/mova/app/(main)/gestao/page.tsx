@@ -1,112 +1,72 @@
 "use client";
 import { useState } from "react";
 
-// Definição da Interface baseada na classe Event do Java backend
-interface Tag {
-  id: string;
-  name: string;
-}
-
-interface Venue {
-  id: string;
-  name: string;
-  city: string;
-}
-
-interface EventPicture {
-  id: string;
-  url: string;
-}
-
-interface Event {
+interface EventSummaryDTO {
   id: string;
   eventName: string;
-  description: string;
-  contentRating: string;
-  price: number;
+  venueName: string; 
   startsAt: string;
   endsAt: string;
-  createdAt: string;
-  updatedAt: string;
-  venue: Venue;
-  tags: Tag[];
-  pictures: EventPicture[];
+  category: string; 
+  coverImageUrl: string | null; 
 }
 
-// Eventos de exemplo para popular a tela inicialmente (Simulando dados do backend)
-// Feito para testar o filtro e a paginação, garantindo que tenhamos mais de 4 eventos para ver o efeito da 
-// divisão em páginas.
+const CATEGORIES = [
+  "Música",
+  "Teatro",
+  "Artes Visuais",
+  "Gastronomia",
+  "Cinema",
+  "Literatura",
+  "Dança"
+];
+
 export default function GestaoEventosPage() {
-  const [events, setEvents] = useState<Event[]>([
+  const [events, setEvents] = useState<EventSummaryDTO[]>([
     {
       id: "id-teste-01",
       eventName: "Festival de Jazz de Sobral",
-      description: "O melhor do jazz instrumental na região Norte.",
-      contentRating: "Livre",
-      price: 0.00,
-      startsAt: "2024-10-15T20:00:00",
-      endsAt: "2024-10-17T23:59:00",
-      createdAt: "2024-01-10T12:00:00",
-      updatedAt: "2024-01-10T12:00:00",
-      venue: { id: "1", name: "Teatro São João", city: "Sobral" },
-      tags: [{ id: "1", name: "Música" }],
-      pictures: [{ id: "p1", url: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=150" }]
+      venueName: "Teatro São João",
+      startsAt: "2026-10-15T20:00:00",
+      endsAt: "2026-10-17T23:59:00",
+      category: "Música",
+      coverImageUrl: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=150"
     },
     {
       id: "id-teste-02",
       eventName: "Exposição Cores do Sertão",
-      description: "Mostra de artes plásticas regionais.",
-      contentRating: "Livre",
-      price: 15.00,
-      startsAt: "2024-09-02T09:00:00",
-      endsAt: "2024-09-30T18:00:00",
-      createdAt: "2024-02-15T14:30:00",
-      updatedAt: "2024-02-15T14:30:00",
-      venue: { id: "2", name: "Casa da Cultura", city: "Sobral" },
-      tags: [{ id: "2", name: "Artes Visuais" }],
-      pictures: [{ id: "p2", url: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150" }]
+      venueName: "Casa da Cultura",
+      startsAt: "2026-09-02T09:00:00",
+      endsAt: "2026-10-30T18:00:00",
+      category: "Artes Visuais",
+      coverImageUrl: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150"
     },
     {
       id: "id-teste-03",
       eventName: "Peça: O Auto da Compadecida",
-      description: "Clássico de Ariano Suassuna.",
-      contentRating: "12+",
-      price: 40.00,
-      startsAt: "2024-11-22T19:00:00",
-      endsAt: "2024-11-22T21:30:00",
-      createdAt: "2024-03-20T10:15:00",
-      updatedAt: "2024-03-22T11:00:00",
-      venue: { id: "3", name: "Arena Sobral", city: "Sobral" },
-      tags: [{ id: "3", name: "Teatro" }],
-      pictures: [{ id: "p3", url: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=150" }]
+      venueName: "Arena Sobral",
+      startsAt: "2026-11-22T19:00:00",
+      endsAt: "2026-11-22T21:30:00",
+      category: "Teatro",
+      coverImageUrl: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=150"
     },
     {
       id: "id-teste-04",
       eventName: "Show de Forró Pé de Serra",
-      description: "Mostra de artes plásticas regionais.",
-      contentRating: "Livre",
-      price: 15.00,
+      venueName: "Casa da Cultura",
       startsAt: "2024-09-02T09:00:00",
       endsAt: "2024-09-30T18:00:00",
-      createdAt: "2024-02-15T14:30:00",
-      updatedAt: "2024-02-15T14:30:00",
-      venue: { id: "2", name: "Casa da Cultura", city: "Sobral" },
-      tags: [{ id: "2", name: "Música" }],
-      pictures: [{ id: "p2", url: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150" }]
+      category: "Música",
+      coverImageUrl: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150"
     },
     {
       id: "id-teste-05",
       eventName: "Baião de 2: Evento Gastronomia Regional",
-      description: "Mostra de artes plásticas regionais.",
-      contentRating: "Livre",
-      price: 15.00,
+      venueName: "Casa da Cultura",
       startsAt: "2024-09-02T09:00:00",
       endsAt: "2024-09-30T18:00:00",
-      createdAt: "2024-02-15T14:30:00",
-      updatedAt: "2024-02-15T14:30:00",
-      venue: { id: "2", name: "Casa da Cultura", city: "Sobral" },
-      tags: [{ id: "2", name: "Gastronomia" }],
-      pictures: [{ id: "p2", url: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150" }]
+      category: "Gastronomia",
+      coverImageUrl: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=150"
     },
   ]);
 
@@ -117,29 +77,17 @@ export default function GestaoEventosPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 4;
 
-  // Categorias retiradas das Preverencias do usuário, para facilitar os testes.
-  const CATEGORIES = [
-    "Música",
-    "Teatro",
-    "Artes Visuais",
-    "Gastronomia",
-    "Cinema",
-    "Literatura",
-    "Dança"
-  ];
-
-  // Função auxiliar para formatação de data
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     return `${date.getDate().toString().padStart(2, '0')} ${months[date.getMonth()]}, ${date.getFullYear()}`;
   };
 
-  // Filtragem completa (Busca + Categoria)
+  // FILTRO SIMPLIFICADO: APLICANDO BUSCA E FILTRO DE CATEGORIA
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.eventName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory 
-      ? event.tags.some(tag => tag.name === selectedCategory) 
+      ? event.category === selectedCategory 
       : true;
 
     return matchesSearch && matchesCategory;
@@ -149,8 +97,6 @@ export default function GestaoEventosPage() {
   const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  
-  // Array final que vai para a tela (Corte dos 4 itens).
   const currentEvents = filteredEvents.slice(startIndex, endIndex);
 
   return (
@@ -172,13 +118,13 @@ export default function GestaoEventosPage() {
         </div>
 
         {/* CONTAINER DA LISTA E FILTROS */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
           
           {/* BARRA DE FERRAMENTAS: BUSCA E FILTROS */}
           <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 justify-between items-center bg-white">
             <div className="relative w-full sm:max-w-xs">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined" style={{ fontSize: 18 }}>search</span>
-
+              
               <input 
                 type="text" 
                 placeholder="Buscar por nome do evento..."
@@ -193,7 +139,7 @@ export default function GestaoEventosPage() {
 
             <div className="flex gap-2 w-full sm:w-auto justify-end">
               
-              {/* CONTAINER DO FILTRO (Relative para a caixinha flutuar aqui dentro) */}
+              {/* CONTAINER DO FILTRO */}
               <div className="relative">
                 <button 
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -201,17 +147,15 @@ export default function GestaoEventosPage() {
                     isFilterOpen || selectedCategory ? 'bg-gray-50 border-gray-300 text-mova-dark' : 'border-gray-200 text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  ⚙ Filtros
+                  <span className="material-symbols-outlined" style={{ fontSize: 18 }}>tune</span>
+                  Filtros
                   {selectedCategory && <span className="w-2 h-2 rounded-full bg-mova-red"></span>}
                 </button>
 
                 {/* CAIXA DE OPÇÕES (Dropdown) */}
                 {isFilterOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-10 py-2">
-                    <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Categorias
-                    </div>
-                    
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Categorias</div>
                     <button
                       onClick={() => { 
                         setSelectedCategory(null); 
@@ -231,7 +175,7 @@ export default function GestaoEventosPage() {
                         onClick={() => { 
                           setSelectedCategory(category); 
                           setIsFilterOpen(false);
-                          setCurrentPage(1); // Volta pra primeira página ao filtrar
+                          setCurrentPage(1);
                         }}
                         className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer ${
                           selectedCategory === category ? 'text-mova-red font-medium' : 'text-gray-600'
@@ -246,7 +190,8 @@ export default function GestaoEventosPage() {
 
               {/* BOTÃO EXPORTAR */}
               <button className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer">
-                ⬇ Exportar
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>download</span>
+                Exportar
               </button>
             </div>
           </div>
@@ -258,74 +203,71 @@ export default function GestaoEventosPage() {
                 <tr className="bg-gray-50/70 border-b border-gray-100">
                   <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider w-[40%]">Evento</th>
                   <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-center">Data</th>
-                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-center">Preço</th>
+                  <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-center">Status</th>
                   <th className="p-4 text-xs font-semibold uppercase text-gray-500 tracking-wider text-center">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {currentEvents.map((event) => (
-                  <tr key={event.id} className="hover:bg-gray-50/50 transition-colors group">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden shrink-0 border border-gray-200/60 shadow-sm">
-                          {event.pictures && event.pictures[0] ? (
-                            <img 
-                              src={event.pictures[0].url} 
-                              alt={event.eventName} 
-                              className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-mova-red/10 flex items-center justify-center font-bold text-mova-red">
-                              {event.eventName.charAt(0)}
-                            </div>
-                          )}
+                {currentEvents.map((event) => {
+                  const isCompleted = new Date(event.endsAt) < new Date();
+
+                  return (
+                    <tr key={event.id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden shrink-0 border border-gray-200/60 shadow-sm">
+                            {event.coverImageUrl ? (
+                              <img 
+                                src={event.coverImageUrl} 
+                                alt={event.eventName} 
+                                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-mova-red/10 flex items-center justify-center font-bold text-mova-red">
+                                {event.eventName.charAt(0)}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-mova-dark text-sm leading-snug">{event.eventName}</h4>
+                            <p className="text-xs text-gray-400 mt-0.5">{event.venueName}</p>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="font-semibold text-mova-dark text-sm leading-snug">{event.eventName}</h4>
-                          <p className="text-xs text-gray-400 mt-0.5">{event.venue?.name}</p>
+                      </td>
+
+                      <td className="p-4 text-sm text-gray-600 font-medium text-center">
+                        {formatDate(event.startsAt)}
+                      </td>
+
+                      
+                      <td className="p-4 text-sm text-center">
+                        {isCompleted ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-200">
+                            Concluído
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-green-50 text-green-700 border border-green-200/50">
+                            Ativo
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="p-4 text-center">
+                        <div className="flex items-center justify-center gap-1.5 -mr-1.5">
+                          <button className="p-1.5 text-gray-400 hover:text-mova-dark hover:bg-gray-100 rounded-lg transition-all cursor-pointer" title="Visualizar">
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>visibility</span>
+                          </button>
+                          <button className="p-1.5 text-gray-400 hover:text-mova-yellow-dark hover:bg-mova-yellow/10 rounded-lg transition-all cursor-pointer" title="Editar">
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
+                          </button>
+                          <button className="p-1.5 text-gray-400 hover:text-mova-red hover:bg-mova-red/10 rounded-lg transition-all cursor-pointer" title="Excluir">
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
+                          </button>
                         </div>
-                      </div>
-                    </td>
-
-                    {/* Mudamos para text-center para casar com o Cabeçalho */}
-                    <td className="p-4 text-sm text-gray-600 font-medium text-center">
-                      {formatDate(event.startsAt)}
-                    </td>
-
-                    {/* Mudamos para text-center para casar com o Cabeçalho */}
-                    <td className="p-4 text-sm text-center">
-                      {event.price === 0 ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-green-50 text-green-700 border border-green-200/50">
-                          Gratuito
-                        </span>
-                      ) : (
-                        <span className="font-medium text-gray-700">
-                          {event.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Alinhamento perfeito: o '-mr-1.5' neutraliza o preenchimento invisível dos botões redondos */}
-                    <td className="p-4 text-center">
-                      <div className="flex items-center justify-center gap-1.5 -mr-1.5">
-                        {/* Visualizar */}
-                        <button className="p-1.5 text-gray-400 hover:text-mova-dark hover:bg-gray-100 rounded-lg transition-all cursor-pointer" title="Visualizar">
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>visibility</span>
-                        </button>
-
-                        {/* Editar */}
-                        <button className="p-1.5 text-gray-400 hover:text-mova-yellow-dark hover:bg-mova-yellow/10 rounded-lg transition-all cursor-pointer" title="Editar">
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
-                        </button>
-
-                        {/* Excluir */}
-                        <button className="p-1.5 text-gray-400 hover:text-mova-red hover:bg-mova-red/10 rounded-lg transition-all cursor-pointer" title="Excluir">
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
 
                 {filteredEvents.length === 0 && (
                   <tr>
