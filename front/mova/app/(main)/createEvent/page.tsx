@@ -69,7 +69,7 @@ export default function CreateEventPage() {
 					<button
 						type="submit"
 						form="form-evento"
-						className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-mova-red hover:bg-red-700 rounded-xl transition-colors shadow-sm"
+						className="cursor-pointer flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-mova-red hover:bg-red-700 rounded-xl transition-colors shadow-sm"
 					>
 						<span className="material-symbols-outlined" style={{ fontSize: 16 }}>
 							publish
@@ -136,7 +136,7 @@ export default function CreateEventPage() {
 												onClick={() =>
 													setSelectedTag((prev) => (prev === tag ? null : tag))
 												}
-												className={`text-xs px-3 py-1.5 rounded-full font-semibold transition-colors ${
+												className={`cursor-pointer text-xs px-3 py-1.5 rounded-full font-semibold transition-colors ${
 													selectedTag === tag
 														? "bg-mova-red text-white"
 														: "bg-gray-100 text-gray-500 hover:bg-gray-200"
@@ -428,7 +428,7 @@ export default function CreateEventPage() {
 										<input
 											name={a.name}
 											type="checkbox"
-											className="w-4 h-4 accent-mova-red rounded"
+											className="cursor-pointer w-4 h-4 accent-mova-red rounded"
 										/>
 										<span
 											className="material-symbols-outlined text-mova-red"
