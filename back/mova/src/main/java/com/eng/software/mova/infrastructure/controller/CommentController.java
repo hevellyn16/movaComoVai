@@ -437,8 +437,9 @@ public class CommentController {
                 required = true,
                 example = "c1a2b3d4-e5f6-7890-abcd-ef1234567890"
             )
-            @PathVariable UUID commentId) {
-        commentService.delete(commentId);
+            @PathVariable UUID commentId,
+            @Parameter(hidden = true) @RequestAttribute String userId) {
+        commentService.delete(commentId, UUID.fromString(userId));
         return ResponseEntity.noContent().build();
     }
 

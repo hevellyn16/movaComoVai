@@ -43,6 +43,7 @@ server:
   port: ${PORT:8080}
 
 app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
   jwtSecret: ${JWT_SECRET:MySecretKeyDefaultToDevelopment}
   jwtExpirationInMs: ${JWT_EXPIRATION:86400000}
   jwtResetExpirationInMs: ${JWT_RESET_EXPIRATION:900000}

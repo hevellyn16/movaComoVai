@@ -299,10 +299,8 @@ class UserServiceTest {
             UserUpdateDTO dto = UserFactory.createFullUpdateDTO();
 
             given(userRepositoryPort.findById(UserFactory.DEFAULT_ID)).willReturn(Optional.of(existing));
-            // Nota: existsByEmail/existsByUsername não são chamados aqui porque
-            // UserConverter.updateUserFromDTO muta o objeto 'existing' in place,
-            // fazendo existing == updated (mesma referência), o que torna as
-            // guards de unicidade no update() sempre false.
+            given(userRepositoryPort.existsByEmail(anyString())).willReturn(false);
+            given(userRepositoryPort.existsByUsername(anyString())).willReturn(false);
             given(userRepositoryPort.update(any(User.class))).willAnswer(inv -> inv.getArgument(0));
 
             // when
@@ -315,9 +313,8 @@ class UserServiceTest {
             assertThat(result.email()).isEqualTo("joao.novo@email.com");
 
             then(userRepositoryPort).should().update(any(User.class));
-            // Verifica que as checagens de unicidade NÃO foram invocadas
-            then(userRepositoryPort).should(never()).existsByEmail(anyString());
-            then(userRepositoryPort).should(never()).existsByUsername(anyString());
+            then(userRepositoryPort).should().existsByEmail("joao.novo@email.com");
+            then(userRepositoryPort).should().existsByUsername("joao_novo");
         }
 
         @Test
@@ -337,6 +334,9 @@ class UserServiceTest {
             assertThat(result.name()).isEqualTo("Novo Nome");
             assertThat(result.email()).isEqualTo(UserFactory.DEFAULT_EMAIL);
             assertThat(result.username()).isEqualTo(UserFactory.DEFAULT_USERNAME);
+            
+            then(userRepositoryPort).should(never()).existsByEmail(anyString());
+            then(userRepositoryPort).should(never()).existsByUsername(anyString());
         }
 
         @Test
@@ -357,26 +357,21 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("Deve atualizar email mesmo quando novo email já existe — guard bypass por mutação in place")
-        void shouldUpdateEmailEvenWhenDuplicate_guardBypassedByMutation() {
+        @DisplayName("Deve lançar ResourceAlreadyExistsException quando novo email já existe")
+        void shouldThrowExceptionWhenEmailAlreadyExists() {
             // given
-            // NOTA: UserConverter.updateUserFromDTO muta o objeto 'existing' diretamente,
-            // fazendo com que existing.getEmail() == updated.getEmail() (mesma referência).
-            // Portanto, a guard de unicidade de email no update() nunca é acionada.
-            // Este teste documenta esse comportamento atual.
             User existing = UserFactory.createDefaultUser();
             UserUpdateDTO dto = UserFactory.createEmailOnlyUpdateDTO("outro@email.com");
 
             given(userRepositoryPort.findById(UserFactory.DEFAULT_ID)).willReturn(Optional.of(existing));
-            given(userRepositoryPort.update(any(User.class))).willAnswer(inv -> inv.getArgument(0));
+            given(userRepositoryPort.existsByEmail("outro@email.com")).willReturn(true);
 
-            // when
-            UserResponseDTO result = userService.update(UserFactory.DEFAULT_ID, dto);
+            // when / then
+            assertThatThrownBy(() -> userService.update(UserFactory.DEFAULT_ID, dto))
+                    .isInstanceOf(ResourceAlreadyExistsException.class)
+                    .hasMessageContaining("User already exists with email: outro@email.com");
 
-            // then — email foi atualizado sem checagem de unicidade
-            assertThat(result.email()).isEqualTo("outro@email.com");
-            then(userRepositoryPort).should(never()).existsByEmail(anyString());
-            then(userRepositoryPort).should().update(any(User.class));
+            then(userRepositoryPort).should(never()).update(any(User.class));
         }
 
         @Test
@@ -398,24 +393,22 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("Deve atualizar username mesmo quando novo username já existe — guard bypass por mutação in place")
-        void shouldUpdateUsernameEvenWhenDuplicate_guardBypassedByMutation() {
+        @DisplayName("Deve lançar ResourceAlreadyExistsException quando novo username já existe")
+        void shouldThrowExceptionWhenUsernameAlreadyExists() {
             // given
-            // NOTA: Mesmo cenário do email — a guard de unicidade é bypassed
-            // porque existing e updated são a mesma referência após a mutação.
             User existing = UserFactory.createDefaultUser();
             UserUpdateDTO dto = UserFactory.createUsernameOnlyUpdateDTO("username_ocupado");
 
             given(userRepositoryPort.findById(UserFactory.DEFAULT_ID)).willReturn(Optional.of(existing));
-            given(userRepositoryPort.update(any(User.class))).willAnswer(inv -> inv.getArgument(0));
+            // Email não foi alterado na DTO, então retorna false ou não chega a verificar
+            given(userRepositoryPort.existsByUsername("username_ocupado")).willReturn(true);
 
-            // when
-            UserResponseDTO result = userService.update(UserFactory.DEFAULT_ID, dto);
+            // when / then
+            assertThatThrownBy(() -> userService.update(UserFactory.DEFAULT_ID, dto))
+                    .isInstanceOf(ResourceAlreadyExistsException.class)
+                    .hasMessageContaining("Username already taken: username_ocupado");
 
-            // then — username foi atualizado sem checagem de unicidade
-            assertThat(result.username()).isEqualTo("username_ocupado");
-            then(userRepositoryPort).should(never()).existsByUsername(anyString());
-            then(userRepositoryPort).should().update(any(User.class));
+            then(userRepositoryPort).should(never()).update(any(User.class));
         }
 
         @Test
