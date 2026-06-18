@@ -22,39 +22,11 @@ export default function AjudaPage() {
     <main className="flex-1 min-h-screen bg-[#F8F6F3] p-6">
       <div className="mx-auto max-w-screen-2xl">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-mova-dark">Central de Ajuda</h1>
-            <p className="text-sm text-gray-500">Como podemos ajudar? Encontre respostas rápidas e suporte para seu perfil e eventos.</p>
-          </div>
+          <h1 className="text-2xl font-bold text-mova-dark">Central de Ajuda</h1>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-6">
-            <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-mova-dark">Como podemos ajudar?</h2>
-                  <p className="text-sm text-gray-500">Busque por problemas, eventos e mais.</p>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <div className="flex items-center gap-3 rounded-3xl border border-gray-200 bg-gray-50 px-4 py-3 shadow-sm">
-                  <span
-                    className="material-symbols-outlined text-gray-400"
-                    style={{ fontSize: 22 }}
-                  >
-                    search
-                  </span>
-                  <input
-                    type="search"
-                    placeholder="Busque por problemas, eventos..."
-                    className="w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
-                  />
-                </div>
-              </div>
-
-            </section>
 
             <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
