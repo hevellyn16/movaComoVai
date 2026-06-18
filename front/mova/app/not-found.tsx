@@ -1,25 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function NotFoundPage() {
-  const router = useRouter();
-  const [countdown, setCountdown] = useState(5);
-
-  useEffect(() => {
-    if (countdown === 0) {
-      router.push("/auth/login");
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [countdown, router]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 font-sans p-6 text-center">
@@ -36,12 +19,10 @@ export default function NotFoundPage() {
         </h2>
         <p className="text-gray-500 text-sm mb-8 leading-relaxed">
           Parece que você se perdeu explorando. A página que você tentou acessar não existe ou foi movida. 
-          <br /><br />
-          Redirecionando para o login em <span className="font-bold text-[#b91c1c]">{countdown}</span> segundos...
         </p>
 
         <Link 
-          href="/auth/login"
+          href="/login"
           className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-[#b91c1c] hover:bg-[#991b1b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b91c1c] transition-colors"
         >
           Ir para o Login agora

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+// import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleGoogleLogin = useGoogleLogin({
+/*  const handleGoogleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       console.log("Registro com Google bem-sucedido!", codeResponse);
     },
@@ -15,6 +15,7 @@ const RegisterForm = () => {
       console.error("Falha no registro com Google:", error);
     }
   });
+*/
 
   return (
     <div className="flex min-h-screen font-sans">
@@ -46,7 +47,7 @@ const RegisterForm = () => {
           <div className="mb-6">
             <button
               type="button"
-              onClick={() => handleGoogleLogin()}
+//              onClick={() => handleGoogleLogin()}
               className="cursor-pointer w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors"
             >
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
@@ -70,7 +71,7 @@ const RegisterForm = () => {
             </div>
           </div>
 
-          <form action="/auth/register" method="post" className="space-y-4">
+          <form action="/register" method="post" className="space-y-4">
             
             <div className="space-y-1">
               <label htmlFor="nome" className="block text-xs font-bold text-gray-700">Nome Completo</label>
@@ -156,7 +157,7 @@ const RegisterForm = () => {
 
           <p className="mt-8 text-center text-sm text-gray-600">
             Já tem uma conta?{' '}
-            <Link href="/auth/login" className="font-bold text-[#b91c1c] hover:underline">
+            <Link href="/login" className="font-bold text-[#b91c1c] hover:underline">
               Entrar
             </Link>
           </p>
@@ -167,10 +168,10 @@ const RegisterForm = () => {
   );
 };
 
-export const AuthRegisterPage = () => {
+export default function AuthRegisterPage(){
   return (
-    <GoogleOAuthProvider clientId="COLOQUE_SEU_CLIENT_ID_AQUI.apps.googleusercontent.com">
+    //<GoogleOAuthProvider clientId="COLOQUE_SEU_CLIENT_ID_AQUI.apps.googleusercontent.com">
       <RegisterForm />
-    </GoogleOAuthProvider>
+    //</GoogleOAuthProvider>
   );
 };
