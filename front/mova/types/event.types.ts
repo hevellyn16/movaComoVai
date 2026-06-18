@@ -62,3 +62,69 @@ export interface CommentPicture {
   commentId: string;
   pictureUrl: string;
 }
+
+export interface EventResponseDTO {
+  id: string;
+  eventName: string;
+  description: string;
+  contentRating: string;
+  price: number;
+  startsAt: string;
+  endsAt: string;
+  creatorId: string;
+  venueId: string;
+  venueName: string;
+  tags: string[];
+  schedules: EventScheduleResponseDTO[];
+  likedByUserIds: string[]; 
+}
+
+export interface EventScheduleResponseDTO {
+  id: string;
+  title: string;
+  description: string;
+  scheduleTime: string;
+}
+
+export interface EventCreateDTO {
+  eventName: string;
+  description?: string;
+  contentRating: string;
+  price: number;
+  startsAt: string;
+  endsAt: string; 
+  venueId?: string;
+  tagIds?: string[];
+}
+
+export interface EventUpdateDTO {
+  eventName?: string;
+  description?: string;
+  contentRating?: string;
+  price?: number;
+  startsAt?: string;
+  endsAt?: string;
+  venueId?: string;
+  tagIds?: string[];
+}
+
+export interface EventScheduleCreateDTO {
+  title: string;
+  description?: string;
+  scheduleTime: string;
+}
+
+export interface EventScheduleUpdateDTO {
+  title?: string;
+  description?: string;
+  scheduleTime?: string;
+}
+
+export interface EventSearchFilters {
+  q?: string;
+  dateFrom?: string; // ISO 8601 string
+  dateTo?: string;   // ISO 8601 string
+  priceMin?: number;
+  priceMax?: number;
+  neighborhood?: string;
+}

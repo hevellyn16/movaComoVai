@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { 
-  userService, 
   UserCreateDTO, 
   UserUpdateDTO, 
   PasswordRequestDTO,
   UserResponseDTO,
   UserPublicProfileDTO,
-  Page
-} from "../services/users.service";
+} from "../types/user.types";
 import { useAuth } from "./useAuth";
+import { userService } from "@/services/users.service";
+import { Page } from "@/types/utils";
 
 export const useUser = () => {
   const [isLoading, setIsLoading] = useState(false);
