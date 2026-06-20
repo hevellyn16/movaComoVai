@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             var userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 
-            request.setAttribute("userId", userDetails.getId());
+            request.setAttribute("userId", userDetails.getId().toString());
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
@@ -53,15 +53,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            filterChain.doFilter(request, response);
-
         } catch (JWTVerificationException | UsernameNotFoundException e) {
             SecurityContextHolder.clearContext();
             entryPoint.commence(request, response, new BadCredentialsException("Invalid or expired token", e));
+            return;
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
             entryPoint.commence(request, response, new BadCredentialsException("Authentication error", e));
+            return;
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

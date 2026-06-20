@@ -63,8 +63,7 @@ class CustomUserDetailsServiceTest {
 
             CustomUserDetails customUserDetails = (CustomUserDetails) result;
             assertThat(customUserDetails.getId()).isEqualTo(mockUser.getId());
-            // Nota: O CustomUserDetailsService mapeia o name para o username do UserDetails
-            assertThat(customUserDetails.getUsername()).isEqualTo(mockUser.getName());
+            assertThat(customUserDetails.getUsername()).isEqualTo(mockUser.getUsername());
             assertThat(customUserDetails.getPassword()).isEqualTo(mockUser.getPassword());
             assertThat(customUserDetails.getEmail()).isEqualTo(mockUser.getEmail());
 

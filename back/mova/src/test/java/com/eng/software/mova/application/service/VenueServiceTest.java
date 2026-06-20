@@ -213,7 +213,7 @@ class VenueServiceTest {
             String city = "São Paulo";
             String neighborhood = "Vila Mariana";
 
-            given(venueRepositoryPort.search(eq(name), eq(city), eq(neighborhood), eq(pageable)))
+            given(venueRepositoryPort.search(eq(name), eq(pageable)))
                     .willReturn(page);
 
             // when
@@ -221,7 +221,7 @@ class VenueServiceTest {
 
             // then
             assertThat(result.getContent()).hasSize(1);
-            then(venueRepositoryPort).should().search(eq(name), eq(city), eq(neighborhood), eq(pageable));
+            then(venueRepositoryPort).should().search(eq(name), eq(pageable));
         }
 
         @Test
@@ -231,7 +231,7 @@ class VenueServiceTest {
             Pageable pageable = PageRequest.of(0, 10);
             Page<Venue> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-            given(venueRepositoryPort.search(null, null, null, pageable))
+            given(venueRepositoryPort.search(null, pageable))
                     .willReturn(emptyPage);
 
             // when

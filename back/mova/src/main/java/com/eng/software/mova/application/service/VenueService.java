@@ -48,6 +48,10 @@ public class VenueService {
         return repository.search(q, pageable);
     }
 
+    public Page<Venue> search(String name, String city, String neighborhood, Pageable pageable) {
+        return repository.search(name, pageable);
+    }
+
     @Transactional
     public Venue update(UUID id, VenueUpdateDTO dto) {
         Venue existingVenue = findById(id);
