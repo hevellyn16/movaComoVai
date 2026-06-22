@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation"; // Para fazer o redirecionamento
 import { useAuth } from "@/hooks/useAuth"; // ATENÇÃO: Ajuste este caminho para o seu arquivo AuthContext
 
-// import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -14,7 +14,6 @@ export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -38,7 +37,25 @@ export const LoginForm = () => {
     }
   };
 
-  /* const handleGoogleLogin = useGoogleLogin({ ... }); */
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsSubmitting(true);
+      setErrorMessage("");
+      try {
+        // Opção A: envia o access_token para o seu backend validar
+        await login({ googleToken: tokenResponse.access_token });
+        router.push("/");
+      } catch (error) {
+        console.error("Erro no login com Google:", error);
+        setErrorMessage("Não foi possível entrar com o Google. Tente novamente.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    onError: () => {
+      setErrorMessage("Login com Google cancelado ou falhou.");
+    },
+  });
 
   return (
     <div className="flex min-h-screen font-sans">
@@ -49,7 +66,7 @@ export const LoginForm = () => {
             "url('https://media.istockphoto.com/photos/front-view-arco-de-nossa-senhora-de-fatima-symbol-of-sobral-city-of-picture-id649424532?k=20&m=649424532&s=612x612&w=0&h=Z2KHjXmy1Azv41z43nVy--FF-odkq4scRKh9-dGE86A=')",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent"></div>
         <div className="relative z-10 p-12 text-white">
           <h2 className="text-4xl font-bold mb-4">
             Descubra a Pulsação Cultural.
@@ -231,7 +248,7 @@ export const LoginForm = () => {
           <div className="mt-6">
             <button
               type="button"
-              //   onClick={() => handleGoogleLogin()}
+                onClick={() => handleGoogleLogin()}
               className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors"
             >
               <svg
@@ -279,8 +296,8 @@ export const LoginForm = () => {
 
 export default function AuthLoginPage() {
   return (
-    //    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-    <LoginForm />
-    //    </GoogleOAuthProvider>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+      <LoginForm />
+    </GoogleOAuthProvider>
   );
 }
