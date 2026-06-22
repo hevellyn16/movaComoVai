@@ -25,6 +25,10 @@ function formatDate(dateString: string) {
   return `${date.getDate().toString().padStart(2, "0")} ${months[date.getMonth()]}, ${date.getFullYear()}`;
 }
 
+function formatTime(dateString: string) {
+	return new Date(dateString).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
 function inferStatus(startsAt: string, endsAt: string) {
   const now = Date.now();
   const start = new Date(startsAt).getTime();
