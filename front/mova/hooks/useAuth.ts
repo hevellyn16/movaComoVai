@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { STORAGE_KEYS } from "@/services/api";
 import { authService, LoginCredentials } from "@/services/auth.service";

@@ -24,3 +24,16 @@ export interface Answer {
 	// Relação opcional
 	user?: User;
 }
+
+export interface CommentResponseDTO {
+  id: string;
+  content: string;
+  userId: string;
+  eventId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CommentCreateDTO {
+  content: string;
+}

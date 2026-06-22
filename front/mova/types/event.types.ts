@@ -1,4 +1,5 @@
 import { User } from "./user.types";
+import { Venue } from "./venue.types";
 
 export interface Event {
   id: string;
@@ -32,20 +33,6 @@ export interface Tag {
   tagname: string;
 }
 
-export interface Venue {
-  id: string;
-  name: string;
-  number: string;
-  city: string;
-  street: string;
-  neighborhood: string;
-  landmark?: string;
-  hasParkingLot: boolean;
-  hasAccessibility: boolean;
-  hasBathroom: boolean;
-  hasFoodsAndDrinks: boolean;
-}
-
 export interface Comment {
   id: string;
   userId: string;
@@ -61,4 +48,70 @@ export interface CommentPicture {
   id: string;
   commentId: string;
   pictureUrl: string;
+}
+
+export interface EventResponseDTO {
+  id: string;
+  eventName: string;
+  description: string;
+  contentRating: string;
+  price: number;
+  startsAt: string;
+  endsAt: string;
+  creatorId: string;
+  venueId: string;
+  venueName: string;
+  tags: string[];
+  schedules: EventScheduleResponseDTO[];
+  likedByUserIds: string[]; 
+}
+
+export interface EventScheduleResponseDTO {
+  id: string;
+  title: string;
+  description: string;
+  scheduleTime: string;
+}
+
+export interface EventCreateDTO {
+  eventName: string;
+  description?: string;
+  contentRating: string;
+  price: number;
+  startsAt: string;
+  endsAt: string; 
+  venueId?: string;
+  tagIds?: string[];
+}
+
+export interface EventUpdateDTO {
+  eventName?: string;
+  description?: string;
+  contentRating?: string;
+  price?: number;
+  startsAt?: string;
+  endsAt?: string;
+  venueId?: string;
+  tagIds?: string[];
+}
+
+export interface EventScheduleCreateDTO {
+  title: string;
+  description?: string;
+  scheduleTime: string;
+}
+
+export interface EventScheduleUpdateDTO {
+  title?: string;
+  description?: string;
+  scheduleTime?: string;
+}
+
+export interface EventSearchFilters {
+  q?: string;
+  dateFrom?: string; // ISO 8601 string
+  dateTo?: string;   // ISO 8601 string
+  priceMin?: number;
+  priceMax?: number;
+  neighborhood?: string;
 }
