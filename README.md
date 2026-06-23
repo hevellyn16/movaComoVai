@@ -63,7 +63,6 @@ O projeto possui duas partes:
 | TypeScript | ^5 | Tipagem estática |
 | Tailwind CSS | ^4 | Estilização |
 | Axios | ^1.18.0 | Requisições HTTP para a API |
-| @react-oauth/google | ^0.13.5 | Login com Google (SSO) |
 
 ---
 
