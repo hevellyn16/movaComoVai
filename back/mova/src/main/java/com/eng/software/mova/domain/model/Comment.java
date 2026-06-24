@@ -22,6 +22,8 @@ public class Comment {
     private LocalDateTime updatedAt;
     private UUID userId;
     private UUID eventId;
+    private String userName;
+    private String userAvatarUrl;
     @Builder.Default
     private Set<UUID> likedByUsers = new HashSet<>();
 }

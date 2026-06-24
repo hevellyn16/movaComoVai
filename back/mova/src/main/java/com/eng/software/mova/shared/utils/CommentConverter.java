@@ -29,6 +29,8 @@ public class CommentConverter {
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .userId(entity.getUser() != null ? entity.getUser().getId() : null)
+                .userName(entity.getUser() != null ? entity.getUser().getName() : null)
+                .userAvatarUrl(entity.getUser() != null ? entity.getUser().getAvatarUrl() : null)
                 .eventId(entity.getEvent() != null ? entity.getEvent().getId() : null)
                 .likedByUsers(likedByUserIds)
                 .build();
@@ -69,6 +71,8 @@ public class CommentConverter {
                 .id(comment.getId())
                 .content(comment.getContent())
                 .userId(comment.getUserId())
+                .userName(comment.getUserName())
+                .userAvatarUrl(comment.getUserAvatarUrl())
                 .eventId(comment.getEventId())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())

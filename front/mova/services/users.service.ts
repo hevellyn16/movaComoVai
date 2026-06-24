@@ -26,6 +26,12 @@ export const userService = {
     return response.data;
   },
 
+  /** Busca os dados completos do próprio usuário logado */
+  getMe: async (): Promise<UserResponseDTO> => {
+    const response = await api.get<UserResponseDTO>("/users/me");
+    return response.data;
+  },
+
   /** Atualiza os dados do próprio usuário autenticado */
   updateMe: async (data: UserUpdateDTO): Promise<UserResponseDTO> => {
     const response = await api.put<UserResponseDTO>("/users", data);

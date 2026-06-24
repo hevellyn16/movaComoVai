@@ -202,6 +202,17 @@ public class UserController {
     // ======================== ROTAS AUTENTICADAS (USUÁRIO) ========================
 
     @Operation(
+            summary = "Buscar dados do usuário autenticado",
+            description = "Retorna os dados completos do próprio usuário logado.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMe(@Parameter(hidden = true) @RequestAttribute String userId) {
+        if (userId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok(userService.findById(UUID.fromString(userId)));
+    }
+
+    @Operation(
             summary = "Atualizar dados do usuário autenticado",
             description = "Atualiza os dados do usuário que está autenticado (identificado pelo token JWT). "
                     + "Todos os campos são opcionais — envie apenas os que deseja alterar. "

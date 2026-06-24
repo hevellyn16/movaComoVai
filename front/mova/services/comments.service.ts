@@ -36,4 +36,14 @@ export const commentService = {
   unlikeComment: async (commentId: string): Promise<void> => {
     await api.delete(`/comments/${commentId}/likes`);
   },
+
+  getAnswers: async (commentId: string): Promise<Page<any>> => {
+    const response = await api.get<Page<any>>(`/answers/comments/${commentId}`);
+    return response.data;
+  },
+
+  createAnswer: async (commentId: string, data: { answer: string }): Promise<any> => {
+    const response = await api.post<any>(`/answers/${commentId}`, data);
+    return response.data;
+  },
 };

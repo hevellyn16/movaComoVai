@@ -7,6 +7,8 @@ const mapDtoToComment = (dto: CommentResponseDTO, currentUserId?: string): Comme
     return {
         id: dto.id,
         userId: dto.userId,
+        userName: dto.userName,
+        userAvatarUrl: dto.userAvatarUrl,
         eventId: dto.eventId,
         comment: dto.content,
         createdAt: dto.createdAt,
@@ -57,7 +59,10 @@ export const useComments = () => {
     const createComment = async (eventId: string, data: CommentCreateDTO): Promise<Comment> => {
         return handleRequest(async () => {
             const newDto = await commentService.create(eventId, data);
-            return mapDtoToComment(newDto, user?.id);
+            const mapped = mapDtoToComment(newDto, user?.id);
+            if (!mapped.userName) mapped.userName = user?.name || "Usuário";
+            if (!mapped.userAvatarUrl) mapped.userAvatarUrl = user?.avatarUrl || undefined;
+            return mapped;
         });
     };
 
@@ -83,6 +88,19 @@ export const useComments = () => {
         });
     };
 
+    const fetchAnswersByCommentId = async (commentId: string) => {
+        return handleRequest(async () => {
+            const data = await commentService.getAnswers(commentId);
+            return data.content; // Array of AnswerResponseDTO
+        });
+    };
+
+    const createAnswer = async (commentId: string, text: string) => {
+        return handleRequest(async () => {
+            return await commentService.createAnswer(commentId, { answer: text });
+        });
+    };
+
     return {
         isLoading,
         error,
@@ -93,5 +111,7 @@ export const useComments = () => {
         updateComment,
         deleteComment,
         toggleCommentLike,
+        fetchAnswersByCommentId,
+        createAnswer,
     };
 };

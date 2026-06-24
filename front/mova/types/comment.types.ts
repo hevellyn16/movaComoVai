@@ -1,8 +1,10 @@
-import { User } from "@/types/event.types";
+import { User } from "@/types/user.types";
 
 export interface Comment {
 	id: string;
 	userId: string;
+	userName?: string;
+	userAvatarUrl?: string;
 	eventId: string;
 	comment: string;
 	createdAt: string;
@@ -29,6 +31,8 @@ export interface CommentResponseDTO {
   id: string;
   content: string;
   userId: string;
+  userName?: string;
+  userAvatarUrl?: string;
   eventId: string;
   createdAt: string;
   updatedAt: string;

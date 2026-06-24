@@ -3,6 +3,7 @@
 import { useState } from "react";
 import AnswerItem from "@/app/respostas/answerItem";
 import { useComments } from "@/hooks/useComments";
+import { useAuth } from "@/hooks/useAuth";
 import { Answer, Comment } from "@/types/comment.types";
 
 function timeAgo(dateString: string) {
@@ -15,7 +16,8 @@ function timeAgo(dateString: string) {
 }
 
 export default function CommentItem({ comment }: { comment: Comment }) {
-  const { toggleCommentLike } = useComments();
+  const { toggleCommentLike, fetchAnswersByCommentId, createAnswer } = useComments();
+  const { user } = useAuth();
 
   const [isLiked, setIsLiked] = useState(comment.isLiked ?? false);
   const [likesCount, setLikesCount] = useState(comment.likesCount ?? 0);
@@ -23,6 +25,7 @@ export default function CommentItem({ comment }: { comment: Comment }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [answers, setAnswers] = useState<Answer[]>(comment.answers ?? []);
+  const [hasLoadedAnswers, setHasLoadedAnswers] = useState(false);
 
   async function handleLike() {
     // 1. Atualização Otimista (Interface responde na hora)
@@ -40,49 +43,70 @@ export default function CommentItem({ comment }: { comment: Comment }) {
     }
   }
 
-  function handleReply() {
+  async function handleReply() {
     if (!replyText.trim()) return;
 
-    // Otimista: adiciona localmente antes da API responder
-    // (Mock mantido até a criação do AnswerController no Spring Boot)
-    const newAnswer: Answer = {
-      id: `a-local-${Date.now()}`,
-      commentId: comment.id,
-      userId: "current-user",
-      answer: replyText.trim(),
-      createdAt: new Date().toISOString(),
-      user: {
-        id: "current-user",
-        name: "Você",
-        email: "",
-        userType: "COMMON",
-        createdAt: new Date().toISOString(),
-      },
-    };
+    try {
+      const responseDto = await createAnswer(comment.id, replyText.trim());
+      
+      const newAnswer: Answer = {
+        id: responseDto.id,
+        commentId: comment.id,
+        userId: responseDto.userId,
+        answer: responseDto.answer,
+        createdAt: responseDto.createdAt,
+        user: user ? {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          userType: user.userType,
+          avatarUrl: user.avatarUrl,
+          createdAt: new Date().toISOString(),
+        } : undefined,
+      };
 
-    setAnswers((prev) => [...prev, newAnswer]);
-    setReplyText("");
-    setShowReplyForm(false);
-    setShowAnswers(true);
-    // TODO: Quando o backend estiver pronto, adicionar chamada API aqui
-    // ex: await createAnswer(comment.id, { answer: replyText })
+      setAnswers((prev) => [...prev, newAnswer]);
+      setReplyText("");
+      setShowReplyForm(false);
+      setShowAnswers(true);
+      setHasLoadedAnswers(true); // se criamos, assumimos que vamos mostrar a lista atualizada
+    } catch (error) {
+      console.error("Erro ao enviar resposta:", error);
+      alert("Falha ao enviar resposta.");
+    }
+  }
+
+  async function handleToggleAnswers() {
+    if (!showAnswers && !hasLoadedAnswers) {
+      try {
+        const fetchedAnswers = await fetchAnswersByCommentId(comment.id);
+        setAnswers(fetchedAnswers);
+        setHasLoadedAnswers(true);
+      } catch (error) {
+        console.error("Erro ao buscar respostas:", error);
+      }
+    }
+    setShowAnswers(!showAnswers);
   }
 
   return (
     <div className="py-4 border-b border-gray-100 last:border-0">
       <div className="flex gap-3">
-        {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
-          <span className="text-xs font-bold text-gray-500">
-            {comment.user?.name?.charAt(0).toUpperCase() ?? "?"}
-          </span>
+        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+          {comment.userAvatarUrl ? (
+            <img src={comment.userAvatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-xs font-bold text-gray-500">
+              {(comment.userName || comment.user?.name || "?").charAt(0).toUpperCase()}
+            </span>
+          )}
         </div>
 
         <div className="flex-1 min-w-0">
           {/* Cabeçalho */}
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-bold text-gray-900">
-              {comment.user?.name ?? "Usuário"}
+              {comment.userName || comment.user?.name || "Usuário"}
             </span>
             <span className="text-xs text-gray-400">
               {timeAgo(comment.createdAt)}
@@ -117,7 +141,9 @@ export default function CommentItem({ comment }: { comment: Comment }) {
             <button
               onClick={() => {
                 setShowReplyForm((prev) => !prev);
-                if (!showAnswers && answers.length > 0) setShowAnswers(true);
+                if (!showAnswers) {
+                   handleToggleAnswers();
+                }
               }}
               className="text-xs font-semibold cursor-pointer text-gray-400 hover:text-gray-900 transition-colors"
             >
@@ -125,16 +151,14 @@ export default function CommentItem({ comment }: { comment: Comment }) {
             </button>
 
             {/* Mostrar/ocultar respostas */}
-            {answers.length > 0 && (
-              <button
-                onClick={() => setShowAnswers((prev) => !prev)}
-                className="text-xs font-semibold cursor-pointer text-[#b91c1c] hover:underline"
-              >
-                {showAnswers
-                  ? "Ocultar respostas"
-                  : `${answers.length} ${answers.length === 1 ? "resposta" : "respostas"}`}
-              </button>
-            )}
+            <button
+              onClick={handleToggleAnswers}
+              className="text-xs font-semibold cursor-pointer text-[#b91c1c] hover:underline"
+            >
+              {showAnswers
+                ? "Ocultar respostas"
+                : (answers.length > 0 ? `${answers.length} ${answers.length === 1 ? "resposta" : "respostas"}` : "Ver respostas")}
+            </button>
           </div>
 
           {/* Formulário de resposta */}

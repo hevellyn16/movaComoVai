@@ -36,8 +36,10 @@ export interface Tag {
 export interface Comment {
   id: string;
   userId: string;
+  userName?: string;
+  userAvatarUrl?: string;
   eventId: string;
-  comment: string;
+  content: string;
   createdAt: string;
   updatedAt?: string;
   pictures?: CommentPicture[];
@@ -64,6 +66,7 @@ export interface EventResponseDTO {
   tags: string[];
   schedules: EventScheduleResponseDTO[];
   likedByUserIds: string[]; 
+  favoritedByUserIds: string[];
 }
 
 export interface EventScheduleResponseDTO {

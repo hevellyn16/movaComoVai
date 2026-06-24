@@ -26,7 +26,7 @@ export const LoginForm = () => {
       await login({ username: email, password });
 
       // Se deu certo, redireciona para a home ou dashboard
-      router.push("/");
+      router.push("/feed");
     } catch (error) {
       console.error("Erro no login:", error);
       setErrorMessage("E-mail ou senha incorretos. Tente novamente.");

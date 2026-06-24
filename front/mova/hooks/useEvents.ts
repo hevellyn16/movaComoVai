@@ -35,7 +35,7 @@ const mapDtoToEvent = (dto: EventResponseDTO, currentUserId?: string): Event => 
     isLiked: currentUserId ? dto.likedByUserIds?.includes(currentUserId) : false,
     
     // Valores default para campos não mapeados no DTO padrão
-    isFavorited: false,
+    isFavorited: currentUserId ? dto.favoritedByUserIds?.includes(currentUserId) : false,
     pictures: [],
   };
 };

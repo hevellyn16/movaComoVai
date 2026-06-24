@@ -27,7 +27,7 @@ export default function CreateEventPage() {
   // Estados do Formulário
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [ticketType, setTicketType] = useState<"free" | "paid">("free");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Estados de Localização
   const [venueMode, setVenueMode] = useState<"existing" | "new">("existing");
@@ -74,8 +74,10 @@ export default function CreateEventPage() {
         return;
       }
 
-      // 2. Resolve a Tag
-      const tagId = tags.find((t) => t.tagName === selectedTag)?.id;
+      // 2. Resolve as Tags (Interesses)
+      const selectedTagIds = tags
+        .filter((t) => selectedTags.includes(t.tagName))
+        .map((t) => t.id);
 
       // 3. Cria o Evento
       await createEvent({
@@ -86,7 +88,7 @@ export default function CreateEventPage() {
         startsAt: `${formData.get("startDate")}T${formData.get("startTime")}:00`,
         endsAt: `${formData.get("endDate")}T${formData.get("endTime")}:00`,
         venueId: finalVenueId,
-        tagIds: tagId ? [tagId] : [],
+        tagIds: selectedTagIds,
       });
 
       alert("Evento publicado com sucesso!");
@@ -190,7 +192,7 @@ export default function CreateEventPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Tag
+                    Interesses
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {tags.map((tag) => (
@@ -198,12 +200,14 @@ export default function CreateEventPage() {
                         key={tag.id}
                         type="button"
                         onClick={() =>
-                          setSelectedTag((prev) =>
-                            prev === tag.tagName ? null : tag.tagName,
+                          setSelectedTags((prev) =>
+                            prev.includes(tag.tagName)
+                              ? prev.filter((t) => t !== tag.tagName)
+                              : [...prev, tag.tagName],
                           )
                         }
                         className={`cursor-pointer text-xs px-3 py-1.5 rounded-full font-semibold transition-colors ${
-                          selectedTag === tag.tagName
+                          selectedTags.includes(tag.tagName)
                             ? "bg-[#b91c1c] text-white"
                             : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}

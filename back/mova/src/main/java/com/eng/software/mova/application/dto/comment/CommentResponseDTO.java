@@ -10,6 +10,8 @@ public record CommentResponseDTO(
         UUID id,
         String content,
         UUID userId,
+        String userName,
+        String userAvatarUrl,
         UUID eventId,
         LocalDateTime createdAt,
         LocalDateTime updatedAt

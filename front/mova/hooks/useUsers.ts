@@ -47,6 +47,10 @@ export const useUser = () => {
     return handleRequest(() => userService.getPublicProfile(username));
   };
 
+  const fetchMe = async (): Promise<UserResponseDTO> => {
+    return handleRequest(() => userService.getMe());
+  };
+
   const updateProfile = async (data: UserUpdateDTO): Promise<UserResponseDTO> => {
     return handleRequest(async () => {
       const updatedUser = await userService.updateMe(data);
@@ -99,6 +103,7 @@ export const useUser = () => {
     deleteAccount,
     addTags,
     removeTag,
+    fetchMe,
     fetchUserById,
     fetchUserByEmail,
     fetchAllUsers,

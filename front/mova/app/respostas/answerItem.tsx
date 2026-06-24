@@ -1,4 +1,7 @@
 import { Answer } from "@/types/comment.types";
+import { useEffect, useState } from "react";
+import { userService } from "@/services/users.service";
+import { UserResponseDTO } from "@/types/user.types";
 
 function timeAgo(dateString: string) {
 	const diff = Date.now() - new Date(dateString).getTime();
@@ -10,21 +13,37 @@ function timeAgo(dateString: string) {
 }
 
 export default function AnswerItem({ answer }: { answer: Answer }) {
+	const [userData, setUserData] = useState<UserResponseDTO | null>(null);
+
+	useEffect(() => {
+		if (!answer.user && answer.userId) {
+			userService.findById(answer.userId).then(setUserData).catch(console.error);
+		}
+	}, [answer.user, answer.userId]);
+
+	const name = answer.user?.name || userData?.name || "Usuário";
+	const userType = answer.user?.userType || userData?.userType;
+	const avatarUrl = answer.user?.avatarUrl || userData?.avatarUrl;
+
 	return (
 		<div className="flex gap-3 pt-3">
 			{/* Avatar */}
-			<div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
-				<span className="text-xs font-bold text-gray-500">
-					{answer.user?.name?.charAt(0).toUpperCase() ?? "?"}
-				</span>
+			<div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+				{avatarUrl ? (
+					<img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+				) : (
+					<span className="text-xs font-bold text-gray-500">
+						{name.charAt(0).toUpperCase()}
+					</span>
+				)}
 			</div>
 
 			<div className="flex-1 min-w-0">
 				<div className="flex items-baseline gap-2">
 					<span className="text-xs font-bold text-mova-dark">
-						{answer.user?.name ?? "Usuário"}
+						{name}
 					</span>
-					{answer.user?.userType === "ADMIN" && (
+					{userType === "ADMIN" && (
 						<span className="text-[10px] font-bold text-mova-red bg-red-50 px-1.5 py-0.5 rounded-full">
 							Organiz.
 						</span>

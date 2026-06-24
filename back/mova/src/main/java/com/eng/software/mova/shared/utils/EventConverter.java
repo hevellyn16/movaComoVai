@@ -130,7 +130,8 @@ public class EventConverter {
                 domain.getTags() != null ? domain.getTags().stream()
                         .map(Tag::getTagName).collect(Collectors.toSet()) : null,
                 schedules,
-                domain.getLikedByUsers() != null ? domain.getLikedByUsers() : null
+                domain.getLikedByUsers() != null ? domain.getLikedByUsers() : null,
+                domain.getFavoriteByUsers() != null ? domain.getFavoriteByUsers() : null
         );
     }
 }

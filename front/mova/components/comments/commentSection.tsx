@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { useComments } from "@/hooks/useComments";
 import { Comment } from "@/types/comment.types";
 import CommentItem from "./commentItem";
@@ -19,6 +20,9 @@ export default function CommentSection({
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    // Pegamos o user logado para exibir a foto ao comentar
+    const { user } = useAuth();
 
     // Busca os comentários reais do backend assim que o componente carrega
     useEffect(() => {
@@ -69,10 +73,14 @@ export default function CommentSection({
 
             {/* Novo comentário */}
             <div className="flex gap-3 mb-6">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-gray-400" style={{ fontSize: 16 }}>
-                        person
-                    </span>
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+                    {user?.avatarUrl ? (
+                        <img src={user.avatarUrl} alt="Seu avatar" className="w-full h-full object-cover" />
+                    ) : (
+                        <span className="material-symbols-outlined text-gray-400" style={{ fontSize: 16 }}>
+                            person
+                        </span>
+                    )}
                 </div>
                 <div className="flex-1 flex gap-2">
                     <input

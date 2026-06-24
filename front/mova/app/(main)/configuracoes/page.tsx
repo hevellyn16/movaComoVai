@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useUser } from "@/hooks/useUsers";
@@ -10,11 +10,12 @@ export default function ConfiguracoesPage() {
   const router = useRouter();
 
   // Hooks de API
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const {
-    fetchUserById,
+    fetchMe,
     updateProfile,
     deleteAccount,
+    uploadAvatar,
     addTags,
     removeTag,
     isLoading: isUserLoading,
@@ -35,6 +36,14 @@ export default function ConfiguracoesPage() {
   const [privateAccount, setPrivateAccount] = useState(false);
   const [activeStatus, setActiveStatus] = useState(true);
 
+  // Estados do Avatar
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Estado de Notificação
+  const [notification, setNotification] = useState<{show: boolean, type: 'success' | 'error', message: string}>({show: false, type: 'success', message: ''});
+
   // =======================================================================
   // CORREÇÃO DO LOOP: Dependendo apenas do ID do usuário logado
   // =======================================================================
@@ -46,8 +55,15 @@ export default function ConfiguracoesPage() {
       fetchAllTags();
 
       try {
-        const userData = await fetchUserById(user.id);
+        const userData = await fetchMe();
         setName(userData.name || "");
+        setBio(userData.bio || "");
+        setPrivateAccount(userData.isPrivate || false);
+
+        // Carrega o avatar existente do usuário
+        if (userData.avatarUrl) {
+          setAvatarPreview(userData.avatarUrl);
+        }
 
         // Se o seu DTO já suportar tags no usuário, descomente abaixo:
         // if (userData.tags) {
@@ -62,6 +78,58 @@ export default function ConfiguracoesPage() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]); // Roda apenas quando o ID do usuário for resolvido
+
+  // Função para abrir o seletor de arquivos
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Função para processar o arquivo selecionado
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validação de tipo (PNG ou JPG)
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Formato inválido. Selecione uma imagem PNG ou JPG.");
+      return;
+    }
+
+    // Validação de tamanho (5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB em bytes
+    if (file.size > maxSize) {
+      alert("A imagem deve ter no máximo 5MB.");
+      return;
+    }
+
+    // Preview local imediato
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload para o backend
+    setIsUploadingAvatar(true);
+    try {
+      const result = await uploadAvatar(file);
+      setAvatarPreview(result.avatarUrl);
+      // Atualiza o avatar no contexto global de autenticação
+      updateUser({ avatarUrl: result.avatarUrl });
+    } catch (error) {
+      console.error("Erro ao fazer upload do avatar:", error);
+      alert("Falha ao enviar a foto. Tente novamente.");
+      // Reverte o preview em caso de erro
+      setAvatarPreview(user?.avatarUrl || null);
+    } finally {
+      setIsUploadingAvatar(false);
+      // Limpa o input para permitir selecionar o mesmo arquivo novamente
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   // Função de alternar interesses (Otimista)
   const toggleInterest = async (tagId: string) => {
@@ -85,15 +153,20 @@ export default function ConfiguracoesPage() {
     }
   };
 
-  // Função de salvar o perfil
   const handleSaveProfile = async () => {
     setIsSaving(true);
     try {
-      await updateProfile({ name });
-      alert("Perfil updated com sucesso!");
+      await updateProfile({ 
+        name, 
+        bio, 
+        isPrivate: privateAccount 
+      });
+      setNotification({ show: true, type: "success", message: "Perfil atualizado com sucesso!" });
+      setTimeout(() => setNotification((prev) => ({ ...prev, show: false })), 3000);
     } catch (error) {
       console.error("Erro ao salvar:", error);
-      alert("Falha ao salvar as alterações.");
+      setNotification({ show: true, type: "error", message: "Falha ao salvar as alterações." });
+      setTimeout(() => setNotification((prev) => ({ ...prev, show: false })), 3000);
     } finally {
       setIsSaving(false);
     }
@@ -166,20 +239,53 @@ export default function ConfiguracoesPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="relative h-20 w-20 overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-gray-400">
-                      {name?.charAt(0)?.toUpperCase() || "?"}
-                    </span>
-                    <div
-                      className="absolute bottom-0 right-0 rounded-full bg-[#b91c1c] p-1 text-white shadow-md cursor-pointer hover:bg-[#991b1b]"
-                      onClick={() =>
-                        alert("Upload de avatar disponível em breve!")
-                      }
-                    >
-                      <span className="material-symbols-outlined text-[18px]">
+                  {/* Input de arquivo oculto */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".png,.jpg,.jpeg"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <div
+                    className="relative h-20 w-20 overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center cursor-pointer group"
+                    onClick={handleAvatarClick}
+                  >
+                    {/* Avatar ou Inicial */}
+                    {avatarPreview ? (
+                      <img
+                        src={avatarPreview}
+                        alt="Foto de perfil"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl font-bold text-gray-400">
+                        {name?.charAt(0)?.toUpperCase() || "?"}
+                      </span>
+                    )}
+
+                    {/* Overlay de hover */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
+                      <span className="material-symbols-outlined text-white text-[24px]">
                         camera_alt
                       </span>
                     </div>
+
+                    {/* Spinner de upload */}
+                    {isUploadingAvatar && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full">
+                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
+                      </div>
+                    )}
+
+                    {/* Botão de câmera */}
+                    {!isUploadingAvatar && (
+                      <div className="absolute bottom-0 right-0 rounded-full bg-[#b91c1c] p-1 text-white shadow-md hover:bg-[#991b1b]">
+                        <span className="material-symbols-outlined text-[18px]">
+                          camera_alt
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <span className="text-sm text-gray-500">
                     PNG ou JPG (Máx. 5MB)
@@ -373,6 +479,21 @@ export default function ConfiguracoesPage() {
           </div>
         </div>
       </div>
+
+      {/* Notificação Toast */}
+      {notification.show && (
+        <div className="fixed bottom-6 right-6 z-50 animate-fade-in-up transition-all duration-300">
+          <div className={`flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl text-white ${notification.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
+            <span className="material-symbols-outlined text-[20px]">
+              {notification.type === "success" ? "check_circle" : "error"}
+            </span>
+            <span className="text-sm font-medium">{notification.message}</span>
+            <button onClick={() => setNotification({ ...notification, show: false })} className="ml-4 hover:opacity-80 flex items-center justify-center cursor-pointer">
+              <span className="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
