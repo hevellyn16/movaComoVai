@@ -199,12 +199,12 @@ export default function ConfiguracoesPage() {
                   />
                 </label>
                 <label className="space-y-2 text-sm font-medium text-gray-700">
-                  E-mail (Apenas leitura)
+                  E-mail
                   <input
+                    placeholder="Insira seu e-mail"
                     type="email"
                     value={user?.email || ""}
-                    disabled
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none cursor-not-allowed"
+                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none"
                   />
                 </label>
               </div>
