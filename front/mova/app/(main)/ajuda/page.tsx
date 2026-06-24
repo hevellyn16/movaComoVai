@@ -19,7 +19,7 @@ export default function AjudaPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <main className="flex-1 min-h-screen bg-[#F8F6F3] p-6">
+    <main className="flex-1 min-h-screen bg-[#F8F6F3] p-4 sm:p-6">
       <div className="mx-auto max-w-screen-2xl">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -28,7 +28,7 @@ export default function AjudaPage() {
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-6">
             <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

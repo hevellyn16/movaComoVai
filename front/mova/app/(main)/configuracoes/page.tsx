@@ -200,7 +200,7 @@ export default function ConfiguracoesPage() {
   }
 
   return (
-    <main className="flex-1 p-6 bg-[#F8F6F3] min-h-screen">
+    <main className="flex-1 p-4 sm:p-6 bg-[#F8F6F3] min-h-screen">
       <div className="mx-auto max-w-screen-2xl">
         {/* Header Superior */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -223,7 +223,7 @@ export default function ConfiguracoesPage() {
           </button>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* Coluna Principal */}
           <div className="space-y-6">
             {/* Seção: Perfil Público */}

@@ -38,8 +38,11 @@ public class CommentService {
 
     public CommentResponseDTO create(CommentCreateDTO createDTO, UUID userId, UUID eventId) {
         Comment comment = CommentConverter.createDTOToDomain(createDTO, userId, eventId);
-        comment =  commentRepositoryPort.save(comment);
-        return CommentConverter.domainToResponseDTO(comment);
+        comment = commentRepositoryPort.save(comment);
+        // Re-fetch to load full user relationship (name, avatarUrl)
+        Comment fullComment = commentRepositoryPort.findById(comment.getId())
+                .orElse(comment);
+        return CommentConverter.domainToResponseDTO(fullComment);
     }
 
     public CommentResponseDTO update(UUID commentId, CommentCreateDTO updateDTO, UUID userId) {

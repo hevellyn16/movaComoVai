@@ -13,17 +13,9 @@ function timeAgo(dateString: string) {
 }
 
 export default function AnswerItem({ answer }: { answer: Answer }) {
-	const [userData, setUserData] = useState<UserResponseDTO | null>(null);
-
-	useEffect(() => {
-		if (!answer.user && answer.userId) {
-			userService.findById(answer.userId).then(setUserData).catch(console.error);
-		}
-	}, [answer.user, answer.userId]);
-
-	const name = answer.user?.name || userData?.name || "Usuário";
-	const userType = answer.user?.userType || userData?.userType;
-	const avatarUrl = answer.user?.avatarUrl || userData?.avatarUrl;
+	const name = answer.userName || answer.user?.name || "Usuário";
+	const userType = answer.user?.userType;
+	const avatarUrl = answer.userAvatarUrl || answer.user?.avatarUrl;
 
 	return (
 		<div className="flex gap-3 pt-3">

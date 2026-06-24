@@ -20,6 +20,8 @@ export interface Answer {
 	id: string;
 	commentId: string;
 	userId: string;
+	userName?: string;
+	userAvatarUrl?: string;
 	answer: string;
 	createdAt: string;
 	updatedAt?: string;

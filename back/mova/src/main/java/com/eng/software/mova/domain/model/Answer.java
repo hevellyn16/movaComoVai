@@ -16,6 +16,8 @@ public class Answer {
     private UUID id;
     private String answer;
     private UUID authorId;
+    private String authorName;
+    private String authorAvatarUrl;
     private UUID commentId;
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();

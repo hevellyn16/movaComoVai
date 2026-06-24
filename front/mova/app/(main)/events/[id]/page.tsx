@@ -144,11 +144,11 @@ export default function EventDetailPage({
     : [];
 
   return (
-    <div className="flex-1 p-6 max-w-4xl mx-auto">
+    <div className="flex-1 p-4 sm:p-6 max-w-4xl mx-auto">
       {/* Voltar */}
       <Link
         href="/feed"
-        className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 mb-6 transition-colors"
+        className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 mb-4 sm:mb-6 transition-colors"
       >
         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
           arrow_back
@@ -157,7 +157,7 @@ export default function EventDetailPage({
       </Link>
 
       {/* Cabeçalho */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-6">
+      <div className="flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-start sm:justify-between mb-4 sm:mb-6">
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-2">
             {event.tags?.map((tag) => (
@@ -184,8 +184,13 @@ export default function EventDetailPage({
                 {status.label}
               </span>
             )}
+            {event.contentRating && (
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                {event.contentRating}
+              </span>
+            )}
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             {event.eventName}
           </h1>
           <p className="mt-2 text-sm text-gray-500 max-w-2xl leading-relaxed whitespace-pre-wrap">
@@ -223,19 +228,19 @@ export default function EventDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[2fr_1fr]">
         {/* Coluna principal */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Imagem principal */}
-          <div className="overflow-hidden rounded-3xl bg-gray-100 shadow-sm">
+          <div className="overflow-hidden rounded-2xl sm:rounded-3xl bg-gray-100 shadow-sm">
             {image ? (
               <img
                 src={image}
                 alt={event.eventName}
-                className="w-full h-72 object-cover"
+                className="w-full h-40 sm:h-72 object-cover"
               />
             ) : (
-              <div className="flex h-72 items-center justify-center bg-gray-100">
+              <div className="flex h-40 sm:h-72 items-center justify-center bg-gray-100">
                 <span
                   className="material-symbols-outlined text-gray-300"
                   style={{ fontSize: 48 }}
@@ -248,7 +253,7 @@ export default function EventDetailPage({
 
           {/* Galeria extra */}
           {extraPictures.length > 0 && (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {extraPictures.map((pic) => (
                 <div
                   key={pic.id}
@@ -264,22 +269,14 @@ export default function EventDetailPage({
             </div>
           )}
 
-          {/* Classificação indicativa */}
-          <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">
-              Classificação Indicativa
-            </h3>
-            <span className="inline-block bg-gray-100 text-gray-600 text-sm font-bold px-3 py-1 rounded-full">
-              {event.contentRating}
-            </span>
-          </div>
+          {/* Classificação indicativa removida como bloco e colocada no cabeçalho */}
         </div>
 
         {/* Coluna lateral */}
         <div className="space-y-4">
           {/* Detalhes */}
-          <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-900 mb-4">Detalhes</h3>
+          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+            <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Detalhes</h3>
             <div className="space-y-3 text-sm text-gray-600">
               <div className="flex items-start gap-3">
                 <span
@@ -333,8 +330,8 @@ export default function EventDetailPage({
 
           {/* Comodidades */}
           {availableAmenities.length > 0 && (
-            <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-sm font-bold text-gray-900 mb-4">
+            <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+              <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">
                 Comodidades
               </h3>
               <div className="grid grid-cols-1 gap-2">
@@ -360,8 +357,8 @@ export default function EventDetailPage({
 
       {/* Eventos semelhantes */}
       {similar.length > 0 && (
-        <div className="mt-8 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-5">
+        <div className="mt-6 sm:mt-8 rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-4 sm:mb-5">
             <h3 className="text-base font-bold text-gray-900">
               Mais em {event.tags?.[0]?.tagname ?? "Sobral"}
             </h3>
@@ -372,7 +369,7 @@ export default function EventDetailPage({
               Ver todos
             </Link>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {similar.map((item) => (
               <Link
                 key={item.id}

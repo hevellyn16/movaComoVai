@@ -20,7 +20,7 @@ export default function EventsPage() {
 			: feedEvents.filter((e) => e.tags?.some((t) => t.tagname === activeTag));
 
 	return (
-		<div className="flex-1 p-6 max-w-3xl mx-auto">
+		<div className="flex-1 p-4 sm:p-6 max-w-5xl w-full mx-auto">
 			<div className="mb-5">
 				<h1 className="text-xl font-bold text-mova-dark">Todos os Eventos</h1>
 				<p className="text-sm text-gray-400">{feedEvents.length} eventos em Sobral</p>
@@ -57,7 +57,9 @@ export default function EventsPage() {
 					</p>
 				</div>
 			) : (
-				filtered.map((event) => <EventCard key={event.id} event={event} />)
+				<div className="space-y-4 md:space-y-6">
+					{filtered.map((event) => <EventCard key={event.id} event={event} />)}
+				</div>
 			)}
 		</div>
 	);

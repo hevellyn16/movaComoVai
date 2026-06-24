@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import EventCard from "@/components/feed/eventCard";
-import { useEvents } from "@/hooks/useEvents"; 
-import { useTags } from "@/hooks/useTags";    
+import { useEvents } from "@/hooks/useEvents";
+import { useTags } from "@/hooks/useTags";
 import { Event } from "@/types/event.types";
 
 export default function FeedPage() {
@@ -16,7 +16,7 @@ export default function FeedPage() {
         const loadFeedData = async () => {
             // Inicia a busca de tags
             fetchAllTags();
-            
+
             try {
                 const data = await fetchAllEvents(0, 20);
                 setEvents(data.content);
@@ -33,8 +33,8 @@ export default function FeedPage() {
         activeTag === "Tudo"
             ? events
             : events.filter((e) =>
-                  e.tags?.some((t) => t.tagname === activeTag)
-              );
+                e.tags?.some((t) => t.tagname === activeTag)
+            );
 
     if (isEventsLoading || isTagsLoading) {
         return (
@@ -49,8 +49,8 @@ export default function FeedPage() {
         return (
             <div className="flex-1 p-6 max-w-3xl mx-auto text-center py-32">
                 <p className="text-red-500 font-medium">Ops! {eventsError}</p>
-                <button 
-                    onClick={() => window.location.reload()} 
+                <button
+                    onClick={() => window.location.reload()}
                     className="mt-4 text-[#b91c1c] font-bold hover:underline cursor-pointer"
                 >
                     Tentar novamente
@@ -60,7 +60,7 @@ export default function FeedPage() {
     }
 
     return (
-        <div className="flex-1 p-6 max-w-3xl mx-auto">
+        <div className="flex-1 p-4 sm:p-6 max-w-3xl mx-auto">
             {/* Cabeçalho */}
             <div className="mb-5">
                 <h1 className="text-2xl font-bold text-[#b91c1c]">Eventos em Sobral</h1>
@@ -73,11 +73,10 @@ export default function FeedPage() {
                     <button
                         key={tag}
                         onClick={() => setActiveTag(tag)}
-                        className={`cursor-pointer text-xs px-4 py-2 rounded-full font-bold whitespace-nowrap transition-colors ${
-                            tag === activeTag
+                        className={`cursor-pointer text-xs px-4 py-2 rounded-full font-bold whitespace-nowrap transition-colors ${tag === activeTag
                                 ? "bg-[#b91c1c] text-white shadow-md"
                                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        }`}
+                            }`}
                     >
                         {tag}
                     </button>

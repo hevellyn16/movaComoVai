@@ -28,7 +28,7 @@ export default function EditEventPage({
   const router = useRouter();
 
   // Hooks da API
-  const { fetchEventById, updateEvent } = useEvents();
+  const { fetchEventById, updateEvent, uploadPicture, deletePicture } = useEvents();
   const { fetchAllTags, tags: availableTags } = useTags();
   const {
     fetchAllVenues,
@@ -46,6 +46,30 @@ export default function EditEventPage({
   const [eventName, setEventName] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [ticketType, setTicketType] = useState<"free" | "paid">("free");
+
+  // Imagem
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pictureToDeleteId, setPictureToDeleteId] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      if (event?.pictures && event.pictures.length > 0) {
+        setPictureToDeleteId(event.pictures[0].id);
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    if (event?.pictures && event.pictures.length > 0) {
+      setPictureToDeleteId(event.pictures[0].id);
+    }
+  };
 
   // Localização
   const [venuesList, setVenuesList] = useState<Venue[]>([]);
@@ -98,6 +122,10 @@ export default function EditEventPage({
   const getEndDate = () => (event?.endsAt ? event.endsAt.split("T")[0] : "");
   const getEndTime = () =>
     event?.endsAt ? event.endsAt.split("T")[1].substring(0, 5) : "";
+
+  const currentImageUrl = event?.pictures && event.pictures.length > 0 && !pictureToDeleteId 
+    ? event.pictures[0].pictureUrl 
+    : previewUrl;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -152,6 +180,15 @@ export default function EditEventPage({
       };
 
       await updateEvent(id, updatePayload);
+
+      // 5. Processa as Imagens
+      if (pictureToDeleteId) {
+         await deletePicture(pictureToDeleteId);
+      }
+      if (selectedFile) {
+         await uploadPicture(id, selectedFile);
+      }
+
       alert("Evento atualizado com sucesso!");
       router.push("/gestao");
     } catch (error) {
@@ -180,8 +217,8 @@ export default function EditEventPage({
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-800">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-8 py-5 top-0 z-10 sticky">
-        <div className="max-w-5xl mx-auto flex justify-between items-center">
+      <header className="bg-white border-b border-gray-100 px-4 sm:px-8 py-4 sm:py-5 top-0 z-10 sticky">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <p className="text-xs font-bold tracking-wider text-[#b91c1c] uppercase mb-1">
               Modo de Edição
@@ -190,11 +227,11 @@ export default function EditEventPage({
               {eventName || "Nome do Evento"}
             </h1>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => router.push("/gestao")}
-              className="px-5 py-2 text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-colors"
+              className="px-5 py-2 text-sm font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-colors flex-1 sm:flex-none text-center"
             >
               Cancelar
             </button>
@@ -202,7 +239,28 @@ export default function EditEventPage({
               type="submit"
               form="edit-event-form"
               disabled={isSubmitting}
-              className={`cursor-pointer px-6 py-2 text-sm font-semibold text-white rounded-xl transition-colors shadow-sm ${
+              onClick={(e) => {
+                 const form = document.getElementById("edit-event-form") as HTMLFormElement;
+                 if (form && !form.checkValidity()) {
+                    e.preventDefault();
+                    const firstInvalid = form.querySelector(':invalid') as HTMLElement;
+                    if (firstInvalid) {
+                        const tab1 = document.getElementById('tab-basico');
+                        const tab2 = document.getElementById('tab-agenda');
+                        const tab3 = document.getElementById('tab-opcoes');
+                        
+                        if (tab1?.contains(firstInvalid)) setActiveTab('basico');
+                        else if (tab2?.contains(firstInvalid)) setActiveTab('agenda_local');
+                        else if (tab3?.contains(firstInvalid)) setActiveTab('opcoes');
+
+                        setTimeout(() => {
+                           firstInvalid.focus();
+                           form.reportValidity();
+                        }, 50);
+                    }
+                 }
+              }}
+              className={`cursor-pointer px-6 py-2 text-sm font-semibold text-white rounded-xl transition-colors shadow-sm flex-1 sm:flex-none text-center ${
                 isSubmitting ? "bg-gray-400" : "bg-[#b91c1c] hover:bg-[#991b1b]"
               }`}
             >
@@ -212,15 +270,15 @@ export default function EditEventPage({
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-5xl mx-auto flex flex-col md:flex-row gap-8 p-8">
+      <main className="flex-1 w-full max-w-5xl mx-auto flex flex-col md:flex-row gap-4 sm:gap-8 p-4 sm:p-6 md:p-8">
         {/* Menu lateral */}
         <aside className="w-full md:w-56 shrink-0">
-          <nav className="flex flex-col gap-1 md:sticky top-32">
+          <nav className="flex flex-row md:flex-col gap-1 md:sticky top-32 overflow-x-auto pb-2 md:pb-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`cursor-pointer text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                className={`cursor-pointer text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors whitespace-nowrap ${
                   activeTab === tab.id
                     ? "bg-red-50 text-[#b91c1c]"
                     : "text-gray-600 hover:bg-gray-100"
@@ -233,10 +291,11 @@ export default function EditEventPage({
         </aside>
 
         {/* Área de edição */}
-        <section className="flex-1 bg-white border border-gray-100 rounded-2xl shadow-sm p-8">
+        <section className="flex-1 bg-white border border-gray-100 rounded-2xl shadow-sm p-4 sm:p-6 md:p-8">
           <form id="edit-event-form" onSubmit={handleSubmit}>
             {/* ABA 1: Informações Básicas */}
             <div
+              id="tab-basico"
               className={`space-y-6 ${activeTab === "basico" ? "block" : "hidden"}`}
             >
               <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">
@@ -274,24 +333,32 @@ export default function EditEventPage({
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Imagem de Capa
                 </label>
-                <div className="h-44 w-full rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors gap-2 relative overflow-hidden">
-                  {event.pictures && event.pictures.length > 0 ? (
-                    <img
-                      src={event.pictures[0].pictureUrl}
-                      alt="Capa atual"
-                      className="absolute inset-0 w-full h-full object-cover opacity-50"
-                    />
-                  ) : null}
-                  <span
-                    className="material-symbols-outlined text-gray-500 z-10"
-                    style={{ fontSize: 32 }}
-                  >
-                    add_photo_alternate
-                  </span>
-                  <span className="text-sm text-gray-600 font-medium z-10 bg-white/80 px-3 py-1 rounded-full">
-                    Clique para alterar a imagem
-                  </span>
-                </div>
+                <label className="h-44 w-full rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#b91c1c] hover:bg-red-50/20 transition-colors gap-2 relative overflow-hidden group">
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                  
+                  {currentImageUrl ? (
+                    <>
+                      <img src={currentImageUrl} alt="Capa atual" className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                         <span className="text-white text-sm font-semibold">Alterar imagem</span>
+                      </div>
+                      <button 
+                         type="button" 
+                         onClick={(e) => { e.preventDefault(); handleRemoveImage(); }} 
+                         className="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 z-20 shadow-md"
+                         title="Remover Imagem"
+                      >
+                         <span className="material-symbols-outlined block" style={{ fontSize: 20 }}>delete</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-gray-300" style={{ fontSize: 36 }}>add_photo_alternate</span>
+                      <span className="text-sm text-gray-600 font-medium">Clique para adicionar uma imagem</span>
+                      <p className="text-xs text-gray-400">PNG, JPG ou GIF · máx. 5MB</p>
+                    </>
+                  )}
+                </label>
               </div>
 
               <div>
@@ -319,13 +386,14 @@ export default function EditEventPage({
 
             {/* ABA 2: Agenda e Local */}
             <div
+              id="tab-agenda"
               className={`space-y-6 ${activeTab === "agenda_local" ? "block" : "hidden"}`}
             >
               <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">
                 Agenda e Local
               </h2>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Data de Início
@@ -437,8 +505,8 @@ export default function EditEventPage({
                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#b91c1c] outline-none"
                       />
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="col-span-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="sm:col-span-2">
                         <label className="block text-sm font-semibold text-gray-700 mb-1">
                           Rua
                         </label>
@@ -461,7 +529,7 @@ export default function EditEventPage({
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">
                           Bairro
@@ -493,6 +561,7 @@ export default function EditEventPage({
 
             {/* ABA 3: Opções */}
             <div
+              id="tab-opcoes"
               className={`space-y-6 ${activeTab === "opcoes" ? "block" : "hidden"}`}
             >
               <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">
@@ -503,7 +572,7 @@ export default function EditEventPage({
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Ingresso
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div
                     onClick={() => setTicketType("free")}
                     className={`cursor-pointer p-4 border-2 rounded-xl transition-all ${
@@ -608,7 +677,7 @@ export default function EditEventPage({
                       )}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {amenities.map((item) => (
                       <label
                         key={item.name}

@@ -40,6 +40,18 @@ public record AnswerResponseDTO(
         UUID userId,
 
         @Schema(
+            description = "Nome do autor da resposta",
+            example = "Maria Silva"
+        )
+        String userName,
+
+        @Schema(
+            description = "URL do avatar do autor da resposta",
+            example = "http://localhost:8080/uploads/avatars/uuid.jpg"
+        )
+        String userAvatarUrl,
+
+        @Schema(
             description = "Identificador único do comentário ao qual esta resposta pertence",
             example = "f0e1d2c3-b4a5-9678-efab-cd1234567890"
         )

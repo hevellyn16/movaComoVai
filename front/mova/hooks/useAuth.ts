@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             ...parsedUser,
             name: userData.username,
             avatarUrl: userData.avatarUrl,
+            userType: userData.userType === "ADMIN" ? "ADMIN" : "COMMON",
           };
           setUser(parsedUser);
           localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(parsedUser));

@@ -40,11 +40,17 @@ public record EventResponseDTO(
         @Schema(description = "Nome do local do evento", example = "Parque Ibirapuera")
         String venueName,
 
+        @Schema(description = "Dados completos do local do evento")
+        com.eng.software.mova.application.dto.venue.VenueResponseDTO venue,
+
         @Schema(description = "Tags associadas ao evento", example = "[\"Rock\", \"Música\", \"Ao vivo\"]")
         Set<String> tags,
 
         @Schema(description = "Itens da programação do evento")
         List<EventScheduleResponseDTO> schedules,
+
+        @Schema(description = "Imagens do evento")
+        List<com.eng.software.mova.application.dto.picture.EventPictureResponseDTO> pictures,
 
         Set<UUID> likedByUserIds,
 

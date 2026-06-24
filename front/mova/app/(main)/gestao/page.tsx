@@ -207,14 +207,14 @@ export default function GestaoEventosPage() {
   // Não renderiza nada enquanto verifica a autenticação ou se não for admin
   if (isAuthLoading || !user || user.userType !== "ADMIN") {
     return (
-      <div className="w-[calc(100vw-224px)] min-h-screen bg-gray-50/50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gray-50/50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#b91c1c]"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-[calc(100vw-224px)] min-h-screen bg-gray-50/50 p-8 font-sans antialiased relative">
+    <div className="w-full min-h-screen bg-gray-50/50 p-4 sm:p-6 md:p-8 font-sans antialiased relative">
       <div className="max-w-5xl mx-auto w-full">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">

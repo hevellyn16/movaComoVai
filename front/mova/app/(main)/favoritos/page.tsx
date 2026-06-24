@@ -37,7 +37,7 @@ export default function FavoritesPage() {
 	}
 
 	return (
-		<div className="flex-1 p-6 max-w-3xl mx-auto">
+		<div className="flex-1 p-4 sm:p-6 max-w-5xl w-full mx-auto">
 			<div className="mb-5">
 				<h1 className="text-xl font-bold text-mova-dark">Meus Favoritos</h1>
 				<p className="text-sm text-gray-400">
@@ -67,9 +67,11 @@ export default function FavoritesPage() {
 					</p>
 				</div>
 			) : (
-				favoriteEvents.map((event) => (
-					<EventCard key={event.id} event={event} />
-				))
+				<div className="space-y-4 md:space-y-6">
+					{favoriteEvents.map((event) => (
+						<EventCard key={event.id} event={event} />
+					))}
+				</div>
 			)}
 		</div>
 	);

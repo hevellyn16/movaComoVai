@@ -116,6 +116,11 @@ public class EventConverter {
                         .map(s -> new EventScheduleResponseDTO(s.getId(), s.getTitle(), s.getDescription(), s.getScheduleTime()))
                         .collect(Collectors.toList()) : null;
 
+        List<com.eng.software.mova.application.dto.picture.EventPictureResponseDTO> pictures = domain.getPictures() != null ?
+                domain.getPictures().stream()
+                        .map(p -> new com.eng.software.mova.application.dto.picture.EventPictureResponseDTO(p.getId(), domain.getId(), p.getPictureUrl()))
+                        .collect(Collectors.toList()) : null;
+
         return new EventResponseDTO(
                 domain.getId(),
                 domain.getEventName(),
@@ -127,9 +132,11 @@ public class EventConverter {
                 domain.getUser() != null ? domain.getUser().getId() : null,
                 domain.getVenue() != null ? domain.getVenue().getId() : null,
                 domain.getVenue() != null ? domain.getVenue().getName() : null,
+                domain.getVenue() != null ? VenueConverter.domainToResponse(domain.getVenue()) : null,
                 domain.getTags() != null ? domain.getTags().stream()
                         .map(Tag::getTagName).collect(Collectors.toSet()) : null,
                 schedules,
+                pictures,
                 domain.getLikedByUsers() != null ? domain.getLikedByUsers() : null,
                 domain.getFavoriteByUsers() != null ? domain.getFavoriteByUsers() : null
         );

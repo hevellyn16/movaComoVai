@@ -63,8 +63,10 @@ export interface EventResponseDTO {
   creatorId: string;
   venueId: string;
   venueName: string;
+  venue?: Venue;
   tags: string[];
   schedules: EventScheduleResponseDTO[];
+  pictures?: EventPicture[];
   likedByUserIds: string[]; 
   favoritedByUserIds: string[];
 }

@@ -21,8 +21,10 @@ public class AnswerConverter {
                 .answer(entity.getAnswer())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
-                .authorId(entity.getAuthor().getId())
-                .commentId(entity.getComment().getId())
+                .authorId(entity.getAuthor() != null ? entity.getAuthor().getId() : null)
+                .authorName(entity.getAuthor() != null ? entity.getAuthor().getName() : null)
+                .authorAvatarUrl(entity.getAuthor() != null ? entity.getAuthor().getAvatarUrl() : null)
+                .commentId(entity.getComment() != null ? entity.getComment().getId() : null)
                 .build();
     }
 
@@ -48,6 +50,8 @@ public class AnswerConverter {
                 .createdAt(answer.getCreatedAt())
                 .updatedAt(answer.getUpdatedAt())
                 .userId(answer.getAuthorId())
+                .userName(answer.getAuthorName())
+                .userAvatarUrl(answer.getAuthorAvatarUrl())
                 .commentId(answer.getCommentId())
                 .build();
     }

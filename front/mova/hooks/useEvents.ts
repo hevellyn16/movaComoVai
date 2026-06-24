@@ -18,7 +18,7 @@ const mapDtoToEvent = (dto: EventResponseDTO, currentUserId?: string): Event => 
     
     tags: dto.tags?.map((t) => ({ id: t, tagname: t })) || [],
     
-    venue: {
+    venue: dto.venue || {
       id: dto.venueId,
       name: dto.venueName,
       number: "",
@@ -36,7 +36,7 @@ const mapDtoToEvent = (dto: EventResponseDTO, currentUserId?: string): Event => 
     
     // Valores default para campos não mapeados no DTO padrão
     isFavorited: currentUserId ? dto.favoritedByUserIds?.includes(currentUserId) : false,
-    pictures: [],
+    pictures: dto.pictures || [],
   };
 };
 
@@ -144,6 +144,14 @@ export const useEvents = () => {
     return handleRequest(() => eventService.delete(id));
   };
 
+  const uploadPicture = async (eventId: string, file: File) => {
+    return handleRequest(() => eventService.uploadPicture(eventId, file));
+  };
+
+  const deletePicture = async (pictureId: string) => {
+    return handleRequest(() => eventService.deletePicture(pictureId));
+  };
+
   return {
     isLoading,
     error,
@@ -164,5 +172,7 @@ export const useEvents = () => {
     createEvent,
     updateEvent,
     deleteEvent,
+    uploadPicture,
+    deletePicture,
   };
 };

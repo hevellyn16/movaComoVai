@@ -102,4 +102,15 @@ export const eventService = {
   removeScheduleFromEvent: async (eventId: string, scheduleId: string): Promise<void> => {
     await api.delete(`/events/${eventId}/schedules/${scheduleId}`);
   },
+
+  uploadPicture: async (eventId: string, file: File): Promise<any> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post(`/event-pictures/${eventId}`, formData);
+    return response.data;
+  },
+
+  deletePicture: async (pictureId: string): Promise<void> => {
+    await api.delete(`/event-pictures/${pictureId}`);
+  },
 };

@@ -20,7 +20,7 @@ export default function CreateEventPage() {
   const router = useRouter();
 
   // Integração com a API
-  const { createEvent } = useEvents();
+  const { createEvent, uploadPicture } = useEvents();
   const { fetchAllTags, tags } = useTags();
   const { fetchAllVenues, createVenue } = useVenues();
 
@@ -28,6 +28,16 @@ export default function CreateEventPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [ticketType, setTicketType] = useState<"free" | "paid">("free");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
 
   // Estados de Localização
   const [venueMode, setVenueMode] = useState<"existing" | "new">("existing");
@@ -80,7 +90,7 @@ export default function CreateEventPage() {
         .map((t) => t.id);
 
       // 3. Cria o Evento
-      await createEvent({
+      const newEvent = await createEvent({
         eventName: formData.get("eventName") as string,
         description: formData.get("description") as string,
         contentRating: formData.get("contentRating") as string,
@@ -90,6 +100,11 @@ export default function CreateEventPage() {
         venueId: finalVenueId,
         tagIds: selectedTagIds,
       });
+
+      // 4. Faz upload da imagem, se houver
+      if (selectedFile && newEvent.id) {
+          await uploadPicture(newEvent.id, selectedFile);
+      }
 
       alert("Evento publicado com sucesso!");
       router.push("/gestao"); // Ajuste para a rota do seu painel de gestão ou feed
@@ -112,9 +127,9 @@ export default function CreateEventPage() {
 
   return (
     <div className="flex-1 bg-gray-50 font-sans text-gray-800">
-      <div className="max-w-5xl mx-auto p-8">
+      <div className="max-w-5xl mx-auto p-4 sm:p-6 md:p-8">
         {/* Header */}
-        <div className="flex justify-between items-end mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
               Cadastrar Novo Evento
@@ -127,7 +142,7 @@ export default function CreateEventPage() {
             type="submit"
             form="form-evento"
             disabled={isSubmitting}
-            className={`cursor-pointer flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-colors shadow-sm ${
+            className={`cursor-pointer flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-colors shadow-sm w-full sm:w-auto ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-[#b91c1c] hover:bg-[#991b1b]"
@@ -237,7 +252,7 @@ export default function CreateEventPage() {
                   Data e Hora
                 </h3>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Data de Início <span className="text-[#b91c1c]">*</span>
@@ -367,8 +382,8 @@ export default function CreateEventPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="col-span-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="sm:col-span-2">
                       <label className="block text-sm font-semibold text-gray-700 mb-1">
                         Rua <span className="text-[#b91c1c]">*</span>
                       </label>
@@ -394,7 +409,7 @@ export default function CreateEventPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1">
                         Bairro <span className="text-[#b91c1c]">*</span>
@@ -455,20 +470,32 @@ export default function CreateEventPage() {
                   Imagem de Capa
                 </h3>
               </div>
-              <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:border-[#b91c1c] hover:bg-red-50/20 transition-colors cursor-pointer gap-2">
-                <span
-                  className="material-symbols-outlined text-gray-300"
-                  style={{ fontSize: 36 }}
-                >
-                  cloud_upload
-                </span>
-                <p className="text-sm font-semibold text-gray-600">
-                  Clique para fazer upload
-                </p>
-                <p className="text-xs text-gray-400">
-                  PNG, JPG ou GIF · máx. 5MB
-                </p>
-              </div>
+              <label className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:border-[#b91c1c] hover:bg-red-50/20 transition-colors cursor-pointer gap-2 relative overflow-hidden h-44 group">
+                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                {previewUrl ? (
+                  <>
+                    <img src={previewUrl} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                       <span className="text-white text-sm font-semibold">Alterar imagem</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <span
+                      className="material-symbols-outlined text-gray-300"
+                      style={{ fontSize: 36 }}
+                    >
+                      cloud_upload
+                    </span>
+                    <p className="text-sm font-semibold text-gray-600">
+                      Clique para fazer upload
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      PNG, JPG ou GIF · máx. 5MB
+                    </p>
+                  </>
+                )}
+              </label>
             </div>
 
             {/* Ingresso */}
