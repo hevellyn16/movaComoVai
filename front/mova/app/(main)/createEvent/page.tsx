@@ -383,8 +383,8 @@ export default function CreateEventPage() {
                       <input
                         required={venueMode === "new"}
                         name="venueNumber"
-                        type="text"
-                        placeholder="ex: S/N"
+                        type="number"
+                        placeholder="67"
                         className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#b91c1c] outline-none"
                       />
                     </div>
