@@ -107,31 +107,15 @@ export default function AjudaPage() {
               <div className="mt-6 flex flex-wrap gap-2">
                 <span className="rounded-full bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white">
                   #CulturaLocal
-</span>
+                </span>
                 <span className="rounded-full bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white">
                   #SuporteMoVa
-</span>
+                </span>
               </div>
             </section>
           </div>
 
           <aside className="space-y-6">
-            <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-mova-dark">Ainda com dúvidas?</h2>
-              <p className="mt-2 text-sm text-gray-500">Nossa equipe de suporte está pronta para te ajudar a qualquer momento.</p>
-
-              <div className="mt-6 space-y-3">
-                <button className="cursor-pointer flex w-full items-center justify-between rounded-3xl bg-mova-red px-5 py-4 text-sm font-semibold text-white transition hover:bg-mova-red-dark">
-                  <span>Iniciar Chat em Tempo Real</span>
-                  <span className="material-symbols-outlined">chat</span>
-                </button>
-                <button className="cursor-pointer flex w-full items-center justify-between rounded-3xl border border-gray-200 bg-white px-5 py-4 text-sm font-semibold text-mova-dark transition hover:bg-gray-100">
-                  <span>Enviar E-mail para Suporte</span>
-                  <span className="material-symbols-outlined">mail</span>
-                </button>
-              </div>
-            </section>
-
             <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-mova-dark">Horário de Atendimento</h3>
               <div className="mt-4 space-y-4 text-sm text-gray-600">

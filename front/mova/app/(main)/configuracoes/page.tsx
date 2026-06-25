@@ -42,7 +42,7 @@ export default function ConfiguracoesPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Estado de Notificação
-  const [notification, setNotification] = useState<{show: boolean, type: 'success' | 'error', message: string}>({show: false, type: 'success', message: ''});
+  const [notification, setNotification] = useState<{ show: boolean, type: 'success' | 'error', message: string }>({ show: false, type: 'success', message: '' });
 
   // =======================================================================
   // CORREÇÃO DO LOOP: Dependendo apenas do ID do usuário logado
@@ -156,10 +156,10 @@ export default function ConfiguracoesPage() {
   const handleSaveProfile = async () => {
     setIsSaving(true);
     try {
-      await updateProfile({ 
-        name, 
-        bio, 
-        isPrivate: privateAccount 
+      await updateProfile({
+        name,
+        bio,
+        isPrivate: privateAccount
       });
       setNotification({ show: true, type: "success", message: "Perfil atualizado com sucesso!" });
       setTimeout(() => setNotification((prev) => ({ ...prev, show: false })), 3000);
@@ -215,9 +215,8 @@ export default function ConfiguracoesPage() {
             type="button"
             onClick={handleSaveProfile}
             disabled={isSaving}
-            className={`cursor-pointer inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors ${
-              isSaving ? "bg-gray-400" : "bg-[#b91c1c] hover:bg-[#991b1b]"
-            }`}
+            className={`cursor-pointer inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors ${isSaving ? "bg-gray-400" : "bg-[#b91c1c] hover:bg-[#991b1b]"
+              }`}
           >
             {isSaving ? "Salvando..." : "Salvar Perfil"}
           </button>
@@ -310,7 +309,8 @@ export default function ConfiguracoesPage() {
                     placeholder="Insira seu e-mail"
                     type="email"
                     value={user?.email || ""}
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none"
+                    readOnly
+                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none cursor-not-allowed"
                   />
                 </label>
               </div>
@@ -337,107 +337,10 @@ export default function ConfiguracoesPage() {
                 </label>
               </div>
             </section>
-
-            {/* Seção: Interesses */}
-            <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Interesses
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Selecione categorias para personalizar seu feed cultural.
-                    (Salvo automaticamente)
-                  </p>
-                </div>
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">
-                  {selectedInterestIds.length}
-                </span>
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                {availableTags.map((tag) => {
-                  const selected = selectedInterestIds.includes(tag.id);
-                  return (
-                    <button
-                      key={tag.id}
-                      type="button"
-                      onClick={() => toggleInterest(tag.id)}
-                      className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                        selected
-                          ? "border-[#b91c1c] bg-[#b91c1c] text-white"
-                          : "border-gray-200 bg-gray-50 text-gray-700 hover:border-[#b91c1c] hover:text-[#b91c1c]"
-                      }`}
-                    >
-                      {tag.tagName}
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
           </div>
 
           {/* Coluna Lateral */}
           <div>
-            {/* Privacidade */}
-            <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Privacidade
-              </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Controle quem vê seu perfil e sua atividade.
-              </p>
-
-              <div className="mt-6 space-y-4">
-                <div className="flex items-center justify-between rounded-3xl border border-gray-200 bg-gray-50 px-4 py-4">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      Conta Privada
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Apenas seguidores podem ver seus itens.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setPrivateAccount((prev) => !prev)}
-                    className={`cursor-pointer relative inline-flex h-7 w-14 shrink-0 items-center rounded-full p-1 transition-colors duration-200 ${
-                      privateAccount ? "bg-[#b91c1c]" : "bg-gray-300"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200 ease-in-out ${
-                        privateAccount ? "translate-x-7" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between rounded-3xl border border-gray-200 bg-gray-50 px-4 py-4">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      Status de Atividade
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Permite que vejam quando você está online.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setActiveStatus((prev) => !prev)}
-                    className={`cursor-pointer relative inline-flex h-7 w-14 shrink-0 items-center rounded-full p-1 transition-colors duration-200 ${
-                      activeStatus ? "bg-[#b91c1c]" : "bg-gray-300"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200 ease-in-out ${
-                        activeStatus ? "translate-x-7" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-              </div>
-            </section>
 
             {/* Zona de Perigo */}
             <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -467,7 +370,7 @@ export default function ConfiguracoesPage() {
             </section>
 
             {/* Botão de Sair */}
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 flex justify-center">
               <button
                 type="button"
                 onClick={logout}
