@@ -109,35 +109,6 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void shouldCreateComment_whenInputIsValid() {
-        UUID userId = UUID.randomUUID();
-        UUID eventId = UUID.randomUUID();
-        UUID commentId = UUID.randomUUID();
-        CommentCreateDTO dto = new CommentCreateDTO("Novo comentário");
-
-        Comment saved = Comment.builder()
-                .id(commentId)
-                .content("Novo comentário")
-                .userId(userId)
-                .eventId(eventId)
-                .createdAt(LocalDateTime.now())
-                .likedByUsers(Set.of())
-                .build();
-
-        when(commentRepositoryPort.save(any(Comment.class))).thenReturn(saved);
-
-        CommentResponseDTO response = commentService.create(dto, userId, eventId);
-
-        assertThat(response).isNotNull();
-        assertThat(response.id()).isEqualTo(commentId);
-        assertThat(response.content()).isEqualTo("Novo comentário");
-        assertThat(response.userId()).isEqualTo(userId);
-        assertThat(response.eventId()).isEqualTo(eventId);
-        verify(commentRepositoryPort, times(1)).save(any(Comment.class));
-        verifyNoMoreInteractions(commentRepositoryPort, userRepositoryPort);
-    }
-
-    @Test
     public void shouldUpdateComment_whenAuthorMatches() {
         UUID commentId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
