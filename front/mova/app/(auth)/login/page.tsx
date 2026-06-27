@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Para fazer o redirecionamento
-import { useAuth } from "@/hooks/useAuth"; // ATENÇÃO: Ajuste este caminho para o seu arquivo AuthContext
+import { useRouter } from "next/navigation"; 
+import { useAuth } from "@/hooks/useAuth"; 
 
 export const LoginForm = () => {
   const router = useRouter();
-  const { login } = useAuth(); // Puxando a função de login do seu hook
+  const { login } = useAuth(); 
 
   // Estados dos inputs e de controle da tela
   const [email, setEmail] = useState("");
