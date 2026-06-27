@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/hooks/useUsers"; // Ajuste o caminho se necessário
+import { useUser } from "@/hooks/useUsers";
 
 const RegisterForm = () => {
   const router = useRouter();
