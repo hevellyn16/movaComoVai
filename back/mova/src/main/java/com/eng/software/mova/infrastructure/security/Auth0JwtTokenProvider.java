@@ -1,0 +1,115 @@
+package com.eng.software.mova.infrastructure.security;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.eng.software.mova.shared.exceptions.InvalidAuthenticationException;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.util.List;
+
+@Component
+public class Auth0JwtTokenProvider {
+
+    private static final String ISSUER = "BarbeShopAPI";
+
+    @Value("${app.jwtSecret}")
+    private String jwtSecret;
+
+    @Value("${app.jwtExpirationInMs}")
+    private long jwtExpirationInMs;
+
+    @Value("${app.jwtResetExpirationInMs}")
+    private long jwtResetExpirationInMs;
+
+    private Algorithm algorithm;
+
+    @PostConstruct
+    public void init() {
+        this.algorithm = Algorithm.HMAC512(jwtSecret);
+    }
+
+    public String generateToken(Authentication authentication) {
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            throw new InvalidAuthenticationException("Principal is not an instance of CustomUserDetails");
+        }
+        return generateToken(userDetails);
+    }
+
+    public String generateToken(CustomUserDetails userDetails) {
+        Instant now = Instant.now();
+        Instant expiryDate = now.plusMillis(jwtExpirationInMs);
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        var jwtBuilder = JWT.create()
+                .withIssuer(ISSUER)
+                .withSubject(userDetails.getEmail())
+                .withIssuedAt(now)
+                .withExpiresAt(expiryDate)
+                .withClaim("roles", roles);
+
+        if (userDetails.getId() != null) {
+            jwtBuilder.withClaim("id", userDetails.getId().toString());
+        }
+
+        return jwtBuilder.sign(algorithm);
+    }
+
+    public String getUsernameFromToken(String token) {
+        if (token != null) {
+            return validateToken(token);
+        }
+        return null;
+    }
+
+    public String validateToken(String token) {
+        try {
+            return verify(token).getSubject();
+        } catch (JWTVerificationException ex) {
+            throw new InvalidAuthenticationException("Invalid token");
+        }
+    }
+
+    public String generatePasswordResetToken(String email) {
+        Instant now = Instant.now();
+        Instant expiryDate = now.plusMillis(jwtResetExpirationInMs);
+
+        return JWT.create()
+                .withIssuer(ISSUER)
+                .withSubject(email)
+                .withIssuedAt(now)
+                .withExpiresAt(expiryDate)
+                .withClaim("type", "password-reset")
+                .sign(algorithm);
+    }
+
+    public String getEmailFromPasswordResetToken(String token) {
+        try {
+            DecodedJWT decodedJWT = verify(token);
+            String type = decodedJWT.getClaim("type").asString();
+            if (!"password-reset".equals(type)) {
+                throw new InvalidAuthenticationException("Invalid password reset token");
+            }
+
+            return decodedJWT.getSubject();
+        } catch (JWTVerificationException ex) {
+            throw new InvalidAuthenticationException("Invalid password reset token");
+        }
+    }
+
+    private DecodedJWT verify(String token) {
+        return JWT.require(algorithm)
+                .withIssuer(ISSUER)
+                .build()
+                .verify(token);
+    }
+}

@@ -7,7 +7,8 @@ CREATE TABLE users (
                        password VARCHAR(255) NOT NULL,
                        user_type user_type NOT NULL,
                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                       updated_at TIMESTAMP
+                       updated_at TIMESTAMP,
+                       is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE tags (

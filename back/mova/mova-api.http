@@ -1,0 +1,325 @@
+@baseUrl = http://localhost:8080
+
+### Login
+# @name loginRequest
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "pablobreak2017@alu.ufc.br",
+  "password": "12345678"
+}
+
+> {%
+    client.global.set("authToken", "Bearer " + response.body.token);
+%}
+
+### Create user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "User Name",
+  "email": "user@example.com",
+  "password": "your-password"
+}
+
+### Forgot password
+POST {{baseUrl}}/users/forgot-password
+Content-Type: application/json
+
+{
+  "email": "pablobreak2017@alu.ufc.br"
+}
+
+### Reset password
+PUT {{baseUrl}}/users/reset-password?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCYXJiZVNob3BBUEkiLCJzdWIiOiJwYWJsb2JyZWFrMjAxN0BhbHUudWZjLmJyIiwiaWF0IjoxNzgwNzUxMDcyLCJleHAiOjE3ODA3NTE5NzIsInR5cGUiOiJwYXNzd29yZC1yZXNldCJ9.zVefvtrkqXgBqSOXerS8PG7VCp67mET0zNsxCxJrepCvTPv845FrGc0b8NgRkpToQJceSFeveqJuev-jrawVfg
+Content-Type: application/json
+
+{
+  "password": "12345678",
+  "confirmPassword": "12345678"
+}
+
+### Update authenticated user
+PUT {{baseUrl}}/users
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "name": "Updated Name",
+  "email": "updated@example.com",
+  "password": "new-password"
+}
+
+### Delete authenticated user
+DELETE {{baseUrl}}/users
+Authorization: {{authToken}}
+
+### Get user by id - ADMIN
+GET {{baseUrl}}/users/{{userId}}
+Authorization: {{authToken}}
+
+### Get user by email - ADMIN
+GET {{baseUrl}}/users/email/{{email}}
+Authorization: {{authToken}}
+
+### List users - ADMIN
+GET {{baseUrl}}/users?page=0&size=10&sort=name,asc
+Authorization: {{authToken}}
+
+### Promote user to admin - ADMIN
+PUT {{baseUrl}}/users/{{userId}}/admin
+Authorization: {{authToken}}
+
+### Find all tags
+GET {{baseUrl}}/tags
+Authorization: {{authToken}}
+
+### Find tag by id
+GET {{baseUrl}}/tags/98ac13d2-d453-4da6-9d18-c9d54340eaab
+Authorization: {{authToken}}
+
+### Create tag
+POST {{baseUrl}}/tags
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "tagName": "Tag Name"
+}
+
+### Update tag
+PUT {{baseUrl}}/tags/98ac13d2-d453-4da6-9d18-c9d54340eaab
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "tagName": "Updated Tag Name"
+}
+
+### Delete tag
+DELETE {{baseUrl}}/tags/98ac13d2-d453-4da6-9d18-c9d54340eaab
+Authorization: {{authToken}}
+
+### Associate tag with user
+POST {{baseUrl}}/users/me/tags
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "tagIds": [
+      "71f68257-a625-42c6-ac12-9cb6d2efd831"
+    ]
+}
+
+### Disassociate tag from user
+DELETE {{baseUrl}}/users/me/tags/71f68257-a625-42c6-ac12-9cb6d2efd831
+Authorization: {{authToken}}
+
+### Create venue - ADMIN
+POST {{baseUrl}}/venues
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "name": "Theatro São João",
+  "number": "123",
+  "city": "Sobral",
+  "street": "Praça São João",
+  "neighborhood": "Centro",
+  "landmark": "Em frente à praça principal",
+  "hasParkingLot": false,
+  "hasAccessibility": true,
+  "hasBathroom": true,
+  "hasFoodsAndDrinks": false
+}
+
+### List venues (Pagination) - USER/ADMIN
+GET {{baseUrl}}/venues?page=0&size=10
+Authorization: {{authToken}}
+
+### Search venues with filters - USER/ADMIN
+GET {{baseUrl}}/venues/search?city=Sobral&neighborhood=Centro&name=Theatro
+Authorization: {{authToken}}
+
+### Get venue by id - USER/ADMIN
+GET {{baseUrl}}/venues/8f74bf2f-a78d-4ead-8f8e-1a5a597484a2
+Authorization: {{authToken}}
+
+### Update venue - ADMIN
+PUT {{baseUrl}}/venues/8f74bf2f-a78d-4ead-8f8e-1a5a597484a2
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "hasParkingLot": true,
+  "hasFoodsAndDrinks": true,
+  "landmark": "Ao lado da nova cafeteria"
+}
+
+### Delete venue - ADMIN
+DELETE {{baseUrl}}/venues/8f74bf2f-a78d-4ead-8f8e-1a5a597484a2
+Authorization: {{authToken}}
+
+### Create event - ADMIN
+POST {{baseUrl}}/events
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "eventName": "Festival de Teatro de Sobral 3",
+  "description": "Uma noite cultural incrível com diversas atrações. 3",
+  "contentRating": "LIVRE",
+  "price": 25.50,
+  "startsAt": "2026-06-15T19:00:00",
+  "endsAt": "2026-06-15T23:00:00",
+  "venueId": "9d54462f-28cb-4cae-8f63-22cb78836244",
+  "tagIds": [
+    "71f68257-a625-42c6-ac12-9cb6d2efd831"
+  ]
+}
+
+### List events (Pagination)
+GET {{baseUrl}}/events?page=0&size=10
+Authorization: {{authToken}}
+
+### Search events with advanced filters
+# Busca eventos "Teatro" que custam até 30 reais no "Centro"
+GET {{baseUrl}}/events/search?q=Teatro&priceMax=30.00&neighborhood=Centro
+Authorization: {{authToken}}
+
+### Get Today's Events
+GET {{baseUrl}}/events/today
+Authorization: {{authToken}}
+
+### Get Upcoming Events
+GET {{baseUrl}}/events/upcoming
+Authorization: {{authToken}}
+
+### Get event by id
+GET {{baseUrl}}/events/e0a91321-2600-4ae9-80de-0e0fd31ce69a
+Authorization: {{authToken}}
+
+### Update event - ADMIN
+PUT {{baseUrl}}/events/a326d0ea-2836-4128-a1a7-4f74eaf01f6f
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "price": 15.00,
+  "description": "Preço promocional! Uma noite cultural incrível."
+}
+
+### Delete event - ADMIN
+DELETE {{baseUrl}}/events/a326d0ea-2836-4128-a1a7-4f74eaf01f6f
+Authorization: {{authToken}}
+
+### Associar tags a um evento - ADMIN
+POST {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/tags
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "tagIds": [
+    "71f68257-a625-42c6-ac12-9cb6d2efd831"
+  ]
+}
+
+### Remover tag de um evento - ADMIN
+DELETE {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/tags/71f68257-a625-42c6-ac12-9cb6d2efd831
+Authorization: {{authToken}}
+
+### Adicionar imagem ao evento - ADMIN
+POST {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/pictures
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "pictureUrl": "https://meubucket.s3.amazonaws.com/eventos/banner-festival.jpg"
+}
+
+### Remover imagem do evento - ADMIN
+DELETE {{baseUrl}}/events/566b0346-c6bc-43d7-8d47-f86539c4ce4c/pictures/6a0de349-9564-4c04-84ec-47dd226b8124
+Authorization: {{authToken}}
+
+### 1. Adicionar item na programação (Line-up) - ADMIN
+POST {{baseUrl}}/events/{{eventIdForSchedules}}/schedules
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Abertura com Cortejo",
+  "description": "Cortejo cultural abrindo o Festival Sertão Vivo.",
+  "scheduleTime": "2026-06-15T18:00:00"
+}
+
+### 2. Atualizar item da programação - ADMIN
+PUT {{baseUrl}}/events/{{eventIdForSchedules}}/schedules/{{scheduleId}}
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Abertura Oficial (Atrasada)",
+  "scheduleTime": "2026-06-15T18:30:00"
+}
+
+### 3. Remover item da programação - ADMIN
+DELETE {{baseUrl}}/events/{{eventIdForSchedules}}/schedules/{{scheduleId}}
+Authorization: {{authToken}}
+
+
+### =========================================
+### INGRESSOS E CHECKOUT (TICKETS)
+### =========================================
+
+@eventIdToBuy = cole-o-id-do-evento-aqui
+@ticketId = cole-o-id-do-ingresso-gerado-aqui
+
+### 1. Comprar Ingresso (Checkout) - USER/ADMIN
+# paymentMethod pode ser: PIX, CREDIT_CARD, BOLETO
+POST {{baseUrl}}/checkout
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "eventId": "{{eventIdToBuy}}",
+  "paymentMethod": "PIX"
+}
+
+### 2. Listar minha carteira de ingressos - USER/ADMIN
+GET {{baseUrl}}/users/me/tickets?page=0&size=10
+Authorization: {{authToken}}
+
+### 3. Consultar ingresso específico (Para ver o QR Code) - USER/ADMIN
+GET {{baseUrl}}/tickets/{{ticketId}}
+Authorization: {{authToken}}
+
+### 4. Atualizar Status do Pagamento (Ex: Webhook do banco avisou que pagou) - ADMIN
+# status pode ser: PAID, CANCELLED, PENDING
+PATCH {{baseUrl}}/tickets/{{ticketId}}/status
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "status": "PAID"
+}
+
+### 5. Validar Entrada no Evento (Bipar QR Code na portaria) - ADMIN
+POST {{baseUrl}}/tickets/{{ticketId}}/validate
+Authorization: {{authToken}}
+
+### 1. Buscar Perfil Público - PÚBLICO
+GET {{baseUrl}}/users/profile/pablo
+
+### 2. Adicionar Avatar (Versão String Inicial) - USER/ADMIN
+POST {{baseUrl}}/users/me/avatar
+Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="avatar.jpeg"
+Content-Type: image/jpeg
+
+< C:\Users\pablo\Downloads\WhatsApp Image 2026-05-06 at 13.54.44.jpeg
+--WebAppBoundary--
